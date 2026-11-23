@@ -47,22 +47,45 @@ export default function Stack() {
   const orbit = useRef<SVGSVGElement>(null);
   const timer = useRef(0);
 
+  const release = useRef<() => void>(undefined);
+
   const enterOrbit = (name: string, el: SVGGElement) => {
     const svg = orbit.current;
-    const m = svg?.getScreenCTM()?.inverse();
-    if (!svg || !m) return;
+    const scale = svg?.getScreenCTM()?.a;
+    if (!svg || !scale) return;
     clearTimeout(timer.current);
-    svg.pauseAnimations();
-    const r = el.querySelector(`.${s.badge}`)!.getBoundingClientRect();
-    const p = new DOMPoint(r.left + r.width / 2, r.top + r.height / 2).matrixTransform(m);
-    setLink({ x: p.x, y: p.y });
-    const box = el.getBoundingClientRect();
+    release.current?.();
+    const hold = el.querySelector<SVGGElement>(`.${s.hold}`)!;
+    const anchor = el.querySelector(`.${s.anchor}`)!;
+    const at = (node: Element) => {
+      const r = node.getBoundingClientRect();
+      const o = svg.getBoundingClientRect();
+      return { x: (r.left + r.width / 2 - o.left) / scale, y: (r.top + r.height / 2 - o.top) / scale };
+    };
+    const start = at(el.querySelector(`.${s.badge}`)!);
+    let frame = 0;
+    const stay = () => {
+      const p = at(anchor);
+      hold.style.translate = `${start.x - p.x}px ${start.y - p.y}px`;
+      frame = requestAnimationFrame(stay);
+    };
+    hold.style.transition = "none";
+    stay();
+    release.current = () => {
+      cancelAnimationFrame(frame);
+      hold.style.transition = "";
+      hold.style.translate = "";
+      release.current = undefined;
+    };
+    const { x, y } = svg.viewBox.baseVal;
+    setLink({ x: start.x + x, y: start.y + y });
+    const box = el.querySelector(`.${s.hit}`)!.getBoundingClientRect();
     setTip({ name, x: box.left + box.width / 2, y: box.top });
   };
 
   const leaveOrbit = () => {
     clearTimeout(timer.current);
-    if (moving() && orbit.current?.closest(".is-live")) orbit.current.unpauseAnimations();
+    release.current?.();
     setLink(null);
     setTip(null);
   };
@@ -76,6 +99,7 @@ export default function Stack() {
     return () => {
       resize.disconnect();
       clearTimeout(timer.current);
+      release.current?.();
     };
   }, []);
 
@@ -115,19 +139,22 @@ export default function Stack() {
                     onKeyDown={(e) => e.key === "Escape" && leaveOrbit()}
                   >
                     <animateMotion dur={`${dur}s`} begin={`-${((i / ring.length) * dur).toFixed(2)}s`} repeatCount="indefinite" path={path} />
-                    <circle r="22" className={s.hit} />
-                    <g className={s.body}>
-                      <circle r="17" className={s.badge} />
-                      {icons[name] ? (
-                        <path d={icons[name].path} transform="translate(-10 -10) scale(0.8333)" className={s.icon} />
-                      ) : (
-                        <text y="4" textAnchor="middle" className={s.mono}>
-                          {name.length > 4 ? name[0] : name}
+                    <circle r="1" className={s.anchor} />
+                    <g className={s.hold}>
+                      <circle r="22" className={s.hit} />
+                      <g className={s.body}>
+                        <circle r="17" className={s.badge} />
+                        {icons[name] ? (
+                          <path d={icons[name].path} transform="translate(-10 -10) scale(0.8333)" className={s.icon} />
+                        ) : (
+                          <text y="4" textAnchor="middle" className={s.mono}>
+                            {name.length > 4 ? name[0] : name}
+                          </text>
+                        )}
+                        <text y="31" textAnchor="middle" className={s.label}>
+                          {name}
                         </text>
-                      )}
-                      <text y="31" textAnchor="middle" className={s.label}>
-                        {name}
-                      </text>
+                      </g>
                     </g>
                   </g>
                 ))}

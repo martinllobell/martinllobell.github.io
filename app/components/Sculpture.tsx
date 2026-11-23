@@ -72,7 +72,7 @@ vec2 map(vec3 p){
   p=rx(M.y*.45)*ry(M.x*.6)*p;${shapes[shape]}
 }
 vec3 env(vec3 r){
-  vec3 sky=mix(mix(C*.3,vec3(.8,.72,.6),r.y*.5+.5),mix(vec3(.05,.055,.07),vec3(.3),r.y*.5+.5),D);
+  vec3 sky=mix(mix(C*.3,vec3(.72,.76,.84),r.y*.5+.5),mix(vec3(.05,.055,.07),vec3(.3),r.y*.5+.5),D);
   float box=smoothstep(.55,.95,r.y)*smoothstep(.9,.15,abs(r.x));
   float rim=smoothstep(.65,1.,r.x)+smoothstep(.75,1.,-r.y)*.4;
   return sky+vec3(1.,.96,.9)*box*1.2+A*rim*.8;
@@ -93,7 +93,7 @@ void main(){
     vec3 r=reflect(rd,n);float nv=max(dot(n,-rd),0.),fr=pow(1.-nv,3.);
     float lit=dot(n,normalize(vec3(-.4,.8,.6)))*.5+.5;
     vec3 base=id<.5?C:id<1.5?mix(C,A,.35):id<2.5?mix(C,A,.65):id<3.5?A*(mix(.7,1.,smoothstep(0.,.8,lit))+1.6*P):C;
-    vec3 shade=mix(mix(vec3(.36,.28,.2),vec3(.3,.31,.36),D),vec3(mix(1.,.93,D)),smoothstep(.1,.85+.1*D,lit));
+    vec3 shade=mix(mix(vec3(.4,.42,.5),vec3(.3,.31,.36),D),vec3(mix(1.,.93,D)),smoothstep(.1,.85+.1*D,lit));
     col=id>3.5?base*shade*.75+env(r)*.5+env(refract(rd,n,.6))*.35:id>2.5?base+env(r)*.15:base*shade+env(r)*(.1+.45*fr);
     col+=(hash(gl_FragCoord.xy+fract(T))-.5)*.04;
   }

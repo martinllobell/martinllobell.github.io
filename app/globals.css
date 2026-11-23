@@ -9,8 +9,8 @@
   --rule: rgba(30, 29, 26, 0.13);
   --accent: #23395e;
   --accent-rgb: 35, 57, 94;
-  --bone: #c4aa82;
-  --ember: #8a6236;
+  --bone: #161e30;
+  --ember: #2c3f63;
   --logo-filter: brightness(0);
   --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .45 0 0 0 0 .4 0 0 0 .18 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --gutter: clamp(1.25rem, 5vw, 4.5rem);

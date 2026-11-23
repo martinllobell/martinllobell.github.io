@@ -45,13 +45,19 @@ export default function Experience() {
   const fit = () => {
     const d = dialog.current!;
     delete d.dataset.fit;
-    let k = 1;
-    const over = () => {
-      d.style.setProperty("--k", String(k));
-      return d.scrollHeight > d.clientHeight + 1;
+    delete d.dataset.tight;
+    const over = () => d.scrollHeight > d.clientHeight + 1;
+    const shrink = () => {
+      for (let k = 1; k > 0.745; k -= 0.02) {
+        d.style.setProperty("--k", String(k));
+        if (!over()) return;
+      }
+      if ("tight" in d.dataset) return;
+      d.dataset.tight = "";
+      shrink();
     };
-    while (over() && k > 0.745) k -= 0.02;
-    if (d.scrollHeight <= d.clientHeight + 1) d.dataset.fit = "";
+    shrink();
+    if (!over()) d.dataset.fit = "";
   };
 
   const open = (i: number, card: HTMLElement) => {

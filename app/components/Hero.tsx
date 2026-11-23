@@ -1,6 +1,6 @@
 import { clientLogos, profile } from "../content";
-import GatewayCore from "./GatewayCore";
 import RoutingField from "./RoutingField";
+import Sculpture from "./Sculpture";
 import s from "./Hero.module.css";
 
 function Letters({ word, offset }: { word: string; offset: number }) {
@@ -20,7 +20,7 @@ export default function Hero() {
   return (
     <section id="top" className={`panel ${s.hero}`} data-live>
       <RoutingField className={s.field} />
-      <GatewayCore className={s.core} />
+      <Sculpture shape="gateway" className={s.core} />
       <div className={s.text} data-parallax="14">
         <p className={s.role}>
           <span className={s.live} aria-hidden="true" />

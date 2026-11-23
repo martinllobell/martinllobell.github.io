@@ -17,8 +17,8 @@ const animate = () => {
       }
       gsap.fromTo(el, { "--py": "0vh" }, { "--py": `-${depth}`, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: "bottom bottom", end: "bottom top", scrub: 0.4 } });
     }
-    for (const el of gsap.utils.toArray<HTMLElement>(".ghost")) {
-      gsap.fromTo(el, { xPercent: 30 }, { xPercent: -30, ease: "none", scrollTrigger: { trigger: el.parentElement, start: "top bottom", end: "bottom top", scrub: 0.6 } });
+    for (const el of gsap.utils.toArray<SVGElement>(".guilloche")) {
+      gsap.fromTo(el, { rotation: -50, yPercent: 25 }, { rotation: 50, yPercent: -25, ease: "none", scrollTrigger: { trigger: el.parentElement, start: "top bottom", end: "bottom top", scrub: 0.6 } });
     }
     for (const el of gsap.utils.toArray<HTMLElement>("h2.title")) {
       const { chars } = new SplitText(el, { type: "words,chars" });

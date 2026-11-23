@@ -3,16 +3,19 @@
 import { projects } from "../content";
 import { tilt } from "./BusinessCard";
 import Scene from "./Scene";
+import Sculpture from "./Sculpture";
 import TechIcon from "./TechIcon";
+import Guilloche from "./Guilloche";
 import s from "./Projects.module.css";
 
 export default function Projects() {
   return (
     <section id="projects" className={`panel ${s.projects}`} data-live>
-      <span className="ghost" aria-hidden="true">
-        Builds
-      </span>
-      <h2 className="title reveal">Projects</h2>
+      <Guilloche lines={24} ratio={0.24} side="right" />
+      <div className={s.heading}>
+        <h2 className="title reveal">Projects</h2>
+        <Sculpture shape="links" className={s.links} />
+      </div>
       <div className={s.row}>
         {projects.map((p, i) => (
           <article key={p.name} className={`reveal ${s.project}`} style={{ "--i": i + 1 } as React.CSSProperties} data-parallax={6 + i * 7} {...tilt}>

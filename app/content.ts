@@ -15,6 +15,13 @@ export const approach = [
   "I also go after the slow parts of how a team ships, like manual release steps or long review loops, and automate them so more of the week goes into the product.",
 ];
 
+export const ai = [
+  "AI lets one engineer do the work of a small team. Knowing how to put it to work matters to me as much as writing the code, and some weeks more.",
+  "Prompts are a small piece of it. Agentic engineering means breaking a job into parts that several agents can run at once and giving each one the right context and tools. It also means deciding what has to pass before anything merges. I run Claude Code this way, with an orchestrator and my own skills, and nothing lands without tests, CI and a human review.",
+  "I'm building Tramo like that: a team of agents with separate roles working from one shared board. Its first four days produced more than 360 commits and about 90 Go test files.",
+  "I've worked with LLMs every day since 2022, and I follow new models, tools and techniques as they come out.",
+];
+
 export type SceneKind = "gateway" | "exchange" | "stream" | "web" | "docs" | "deploy" | "ledger" | "finance" | "chain";
 
 export type Role = {

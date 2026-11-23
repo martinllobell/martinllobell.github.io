@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { orbits, techNotes } from "../content";
 import TechIcon, { icons } from "./TechIcon";
+import Sculpture from "./Sculpture";
 import s from "./Stack.module.css";
 
 type Tip = { name: string; x: number; y: number };
@@ -80,64 +81,61 @@ export default function Stack() {
 
   return (
     <section id="stack" className={`panel ${s.stack}`} data-live>
-      <span className="ghost" aria-hidden="true">
-        Toolbox
-      </span>
       <h2 className="title reveal">Stack</h2>
-      <svg ref={orbit} className={s.orbit} viewBox={layout.viewBox} role="group" aria-label="Technologies I work with" data-parallax="10" onPointerMove={drift} onPointerLeave={settle}>
-        {link && <line x1="0" y1="0" x2={link.x} y2={link.y} className={s.link} />}
-        <g transform={`scale(${layout.core})`}>
-          <circle r="40" className={s.core} />
-          <circle r="40" className={s.halo} />
-          <path d="M-16 -9 Q-6 -9 0 0 M-16 9 Q-6 9 0 0 M0 0 Q6 -9 16 -9 M0 0 Q6 9 16 9" className={s.mark} />
-          <circle r="4" className={s.hub} />
-        </g>
-        {orbits.map((ring, k) => {
-          const [rx, ry] = layout.rings[k];
-          const dur = 60 + k * 30;
-          const sweep = k % 2;
-          const path = `M${rx} 0 A${rx} ${ry} 0 1 ${sweep} ${-rx} 0 A${rx} ${ry} 0 1 ${sweep} ${rx} 0`;
-          return (
-            <g key={k} className={s.ring} style={{ "--k": k + 1 } as React.CSSProperties}>
-              <ellipse rx={rx} ry={ry} className={s.path} />
-              {ring.map((name, i) => (
-                <g
-                  key={name}
-                  className={s.item}
-                  style={brand(name)}
-                  tabIndex={0}
-                  role="img"
-                  aria-label={`${name}: ${techNotes[name]}`}
-                  onPointerEnter={(e) => enterOrbit(name, e.currentTarget)}
-                  onPointerLeave={(e) => {
-                    if (e.pointerType === "touch") timer.current = window.setTimeout(leaveOrbit, 2200);
-                    else leaveOrbit();
-                  }}
-                  onFocus={(e) => enterOrbit(name, e.currentTarget)}
-                  onBlur={leaveOrbit}
-                  onKeyDown={(e) => e.key === "Escape" && leaveOrbit()}
-                >
-                  <animateMotion dur={`${dur}s`} begin={`-${((i / ring.length) * dur).toFixed(2)}s`} repeatCount="indefinite" path={path} />
-                  <circle r="22" className={s.hit} />
-                  <g className={s.body}>
-                    <circle r="17" className={s.badge} />
-                    {icons[name] ? (
-                      <path d={icons[name].path} transform="translate(-10 -10) scale(0.8333)" className={s.icon} />
-                    ) : (
-                      <text y="4" textAnchor="middle" className={s.mono}>
-                        {name.length > 4 ? name[0] : name}
+      <div className={s.tree} data-parallax="10">
+        <Sculpture shape="gem" className={s.gem} />
+        <svg ref={orbit} className={s.orbit} viewBox={layout.viewBox} role="group" aria-label="Technologies I work with" onPointerMove={drift} onPointerLeave={settle}>
+          {link && <line x1="0" y1="0" x2={link.x} y2={link.y} className={s.link} />}
+          <g transform={`scale(${layout.core})`}>
+            <circle r="40" className={s.halo} />
+          </g>
+          {orbits.map((ring, k) => {
+            const [rx, ry] = layout.rings[k];
+            const dur = 60 + k * 30;
+            const sweep = k % 2;
+            const path = `M${rx} 0 A${rx} ${ry} 0 1 ${sweep} ${-rx} 0 A${rx} ${ry} 0 1 ${sweep} ${rx} 0`;
+            return (
+              <g key={k} className={s.ring} style={{ "--k": k + 1 } as React.CSSProperties}>
+                <ellipse rx={rx} ry={ry} className={s.path} />
+                {ring.map((name, i) => (
+                  <g
+                    key={name}
+                    className={s.item}
+                    style={brand(name)}
+                    tabIndex={0}
+                    role="img"
+                    aria-label={`${name}: ${techNotes[name]}`}
+                    onPointerEnter={(e) => enterOrbit(name, e.currentTarget)}
+                    onPointerLeave={(e) => {
+                      if (e.pointerType === "touch") timer.current = window.setTimeout(leaveOrbit, 2200);
+                      else leaveOrbit();
+                    }}
+                    onFocus={(e) => enterOrbit(name, e.currentTarget)}
+                    onBlur={leaveOrbit}
+                    onKeyDown={(e) => e.key === "Escape" && leaveOrbit()}
+                  >
+                    <animateMotion dur={`${dur}s`} begin={`-${((i / ring.length) * dur).toFixed(2)}s`} repeatCount="indefinite" path={path} />
+                    <circle r="22" className={s.hit} />
+                    <g className={s.body}>
+                      <circle r="17" className={s.badge} />
+                      {icons[name] ? (
+                        <path d={icons[name].path} transform="translate(-10 -10) scale(0.8333)" className={s.icon} />
+                      ) : (
+                        <text y="4" textAnchor="middle" className={s.mono}>
+                          {name.length > 4 ? name[0] : name}
+                        </text>
+                      )}
+                      <text y="31" textAnchor="middle" className={s.label}>
+                        {name}
                       </text>
-                    )}
-                    <text y="31" textAnchor="middle" className={s.label}>
-                      {name}
-                    </text>
+                    </g>
                   </g>
-                </g>
-              ))}
-            </g>
-          );
-        })}
-      </svg>
+                ))}
+              </g>
+            );
+          })}
+        </svg>
+      </div>
       {tip && (
         <div aria-hidden="true" className={s.tip} style={{ left: `clamp(8.75rem, ${tip.x}px, calc(100vw - 8.75rem))`, top: tip.y, ...brand(tip.name) }}>
           <strong>{tip.name}</strong>

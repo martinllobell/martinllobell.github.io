@@ -32,6 +32,12 @@ function Gateway() {
       {[30, 80, 130].map((y) => (
         <rect key={`b${y}`} x="298" y={y - 6} width="12" height="12" className={s.node} />
       ))}
+      <text x="15" y="156" textAnchor="middle" className={s.label}>
+        Agents
+      </text>
+      <text x="304" y="156" textAnchor="middle" className={s.label}>
+        Models
+      </text>
       <circle cx="160" cy="80" r="16" className={`${s.ring} ${s.pulse}`} />
       <circle cx="160" cy="80" r="7" className={s.hub} />
       <ellipse cx="160" cy="142" rx="14" ry="5" className={s.node} />
@@ -40,21 +46,48 @@ function Gateway() {
   );
 }
 
+const candles = [
+  [124, 106, 98, 132],
+  [106, 118, 98, 126],
+  [118, 92, 84, 124],
+  [92, 104, 84, 112],
+  [104, 78, 68, 110],
+  [78, 90, 70, 98],
+  [90, 60, 52, 94],
+  [60, 74, 52, 82],
+  [74, 50, 42, 80],
+  [50, 62, 42, 70],
+];
+
 function Exchange() {
-  const wave = "M0 90 L20 84 L40 96 L60 70 L80 78 L100 60 L120 72 L140 52 L160 66 L180 48 L200 70 L220 58 L240 80 L260 64 L280 86 L300 74 L320 90";
   return (
     <>
-      <line x1="0" y1="122" x2="320" y2="122" className={`${s.wire} ${s.dash}`} />
-      <line x1="0" y1="66" x2="320" y2="66" className={`${s.wire} ${s.dash}`} />
-      <g className={s.scrollX}>
-        <path d={wave} className={s.line} />
-        <path d={wave} className={s.line} transform="translate(320 0)" />
-      </g>
-      {[40, 100, 160, 220, 280].map((x, i) => (
-        <rect key={x} x={x - 4} y={100 - (i % 3) * 14} width="8" height={18 + (i % 2) * 10} className={s.candle} style={delay(i * 0.3)} />
+      {[14, 50, 86, 122].map((y) => (
+        <line key={y} x1="4" y1={y} x2="252" y2={y} className={s.grid} />
       ))}
-      <circle cx="300" cy="66" r="5" className={s.hub} />
-      <circle cx="300" cy="66" r="12" className={`${s.ring} ${s.pulse}`} />
+      {candles.map(([open, close, high, low], i) => {
+        const x = 14 + i * 22;
+        return (
+          <g key={x} className={s.enter} style={delay(i * 0.09)}>
+            <line x1={x} y1={high} x2={x} y2={low} className={s.wick} />
+            <rect x={x - 7} y={Math.min(open, close)} width="14" height={Math.abs(open - close)} className={close < open ? s.rise : s.fall} />
+          </g>
+        );
+      })}
+      <line x1="236" y1="14" x2="236" y2="70" className={s.wick} />
+      <rect x="229" y="22" width="14" height="40" className={`${s.rise} ${s.live}`} />
+      <g className={s.mark}>
+        <line x1="4" y1="62" x2="254" y2="62" className={s.markLine} />
+        <rect x="254" y="53" width="64" height="18" rx="3" className={s.hub} />
+        <text x="286" y="66" textAnchor="middle" className={s.tag}>
+          Mark price
+        </text>
+      </g>
+      <line x1="4" y1="148" x2="254" y2="148" className={`${s.wire} ${s.dash}`} />
+      <rect x="254" y="139" width="64" height="18" rx="3" className={s.node} />
+      <text x="286" y="152" textAnchor="middle" className={s.label}>
+        Liquidation
+      </text>
     </>
   );
 }
@@ -64,6 +97,12 @@ function Stream() {
     <>
       <rect x="8" y="22" width="34" height="116" rx="6" className={s.node} />
       <rect x="278" y="22" width="34" height="116" rx="6" className={s.node} />
+      <text x="25" y="154" textAnchor="middle" className={s.label}>
+        Producer
+      </text>
+      <text x="292" y="154" textAnchor="middle" className={s.label}>
+        Consumer
+      </text>
       {[44, 80, 116].map((y, lane) => (
         <g key={y}>
           <line x1="48" y1={y} x2="272" y2={y} className={s.wire} />
@@ -119,14 +158,19 @@ function Docs() {
 function Deploy() {
   return (
     <>
-      <line x1="30" y1="80" x2="270" y2="80" className={s.wire} />
-      <Dot path="M30 80 L270 80" dur={3.2} r={3.5} />
-      {[30, 110, 190, 270].map((x, i) => (
-        <g key={x}>
-          <circle cx={x} cy="80" r="14" className={`${s.node} ${s.stage}`} style={delay(i * 0.8)} />
-          <rect x={x - 12} y="112" width="24" height="4" rx="2" className={s.skel} style={delay(i * 0.8)} />
-        </g>
-      ))}
+      <line x1="40" y1="80" x2="280" y2="80" className={s.wire} />
+      <Dot path="M40 80 L280 80" dur={3.2} r={3.5} />
+      {["Commit", "Build", "Test", "Live"].map((stage, i) => {
+        const x = 40 + i * 80;
+        return (
+          <g key={x}>
+            <circle cx={x} cy="80" r="14" className={`${s.node} ${s.stage}`} style={delay(i * 0.8)} />
+            <text x={x} y="114" textAnchor="middle" className={s.label}>
+              {stage}
+            </text>
+          </g>
+        );
+      })}
     </>
   );
 }

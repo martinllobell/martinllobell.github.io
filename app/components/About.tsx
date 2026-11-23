@@ -1,4 +1,5 @@
 import { approach, profile } from "../content";
+import Guilloche from "./Guilloche";
 import s from "./About.module.css";
 
 const log = [
@@ -15,9 +16,7 @@ const log = [
 export default function About() {
   return (
     <section id="about" className={`panel ${s.about}`} data-live>
-      <span className="ghost" aria-hidden="true">
-        Product
-      </span>
+      <Guilloche lines={36} ratio={0.36} side="right" />
       <h2 className="title reveal">Approach</h2>
       <div className={s.grid}>
         <div className={s.text} data-parallax="6">

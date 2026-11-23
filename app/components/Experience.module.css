@@ -5,13 +5,32 @@
   grid-template-rows: auto minmax(0, 1fr) auto;
   align-content: stretch;
   gap: clamp(0.75rem, 2.5vh, 2rem);
+  padding-top: calc(var(--nav-h) + 0.5vh);
   padding-bottom: 3vh;
 }
 
 .head {
-  display: grid;
-  justify-items: center;
-  gap: 0.25rem;
+  position: relative;
+  justify-self: center;
+  width: min(100%, 72rem);
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.9rem;
+}
+
+.watch {
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  top: 0;
+  width: min(22vh, 18vw);
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+
+.head h2 {
+  font-size: clamp(1.6rem, 1rem + 1.8vh, 2.4rem);
 }
 
 .counter {
@@ -206,6 +225,10 @@
 
 .scene {
   height: clamp(2.5rem, 15cqh, 8rem);
+}
+
+.scene text {
+  display: none;
 }
 
 .tech {

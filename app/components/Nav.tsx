@@ -6,6 +6,7 @@ import s from "./Nav.module.css";
 const sections = [
   ["top", "Intro"],
   ["about", "Approach"],
+  ["ai", "Working with AI"],
   ["experience", "Experience"],
   ["projects", "Projects"],
   ["stack", "Stack"],

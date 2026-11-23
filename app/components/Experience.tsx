@@ -5,9 +5,11 @@ import { flushSync } from "react-dom";
 import { experience } from "../content";
 import BusinessCard from "./BusinessCard";
 import Scene from "./Scene";
+import Sculpture from "./Sculpture";
 import TechIcon from "./TechIcon";
 import { revealText } from "./Motion";
 import RoleDialog from "./RoleDialog";
+import Guilloche from "./Guilloche";
 import s from "./Experience.module.css";
 
 const last = experience.length - 1;
@@ -40,6 +42,18 @@ export default function Experience() {
     return run.finished;
   };
 
+  const fit = () => {
+    const d = dialog.current!;
+    delete d.dataset.fit;
+    let k = 1;
+    const over = () => {
+      d.style.setProperty("--k", String(k));
+      return d.scrollHeight > d.clientHeight + 1;
+    };
+    while (over() && k > 0.745) k -= 0.02;
+    if (d.scrollHeight <= d.clientHeight + 1) d.dataset.fit = "";
+  };
+
   const open = (i: number, card: HTMLElement) => {
     if (dialog.current?.open || lifted.current?.style.viewTransitionName) return;
     lifted.current = card;
@@ -51,6 +65,7 @@ export default function Experience() {
       const d = dialog.current!;
       d.showModal();
       d.scrollTop = 0;
+      fit();
       if (still()) d.querySelectorAll("svg").forEach((svg) => svg.pauseAnimations());
       else undoReveal.current = revealText(d);
     });
@@ -117,23 +132,30 @@ export default function Experience() {
     for (const r of experience) if (r.image) new Image().src = `/work/${r.image}`;
     update();
     t.addEventListener("scroll", schedule, { passive: true });
+    let fitting = 0;
+    const refit = () => {
+      cancelAnimationFrame(fitting);
+      if (dialog.current?.open) fitting = requestAnimationFrame(fit);
+    };
     addEventListener("resize", schedule);
+    addEventListener("resize", refit);
     sec.addEventListener("wheel", step, { passive: false });
     return () => {
       cancelAnimationFrame(frame);
+      cancelAnimationFrame(fitting);
       clearTimeout(quiet);
       t.removeEventListener("scroll", schedule);
       removeEventListener("resize", schedule);
+      removeEventListener("resize", refit);
       sec.removeEventListener("wheel", step);
     };
   }, []);
 
   return (
     <section id="experience" ref={section} className={`panel ${s.experience}`} data-live>
-      <span className="ghost" aria-hidden="true">
-        Career
-      </span>
+      <Guilloche lines={48} ratio={0.5} side="left" />
       <header className={s.head}>
+        <Sculpture shape="watch" className={s.watch} />
         <h2 className="title">Experience</h2>
         <p className={s.counter} aria-hidden="true">
           <span key={active}>{pad(active + 1)}</span> / {pad(experience.length)}

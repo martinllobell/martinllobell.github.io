@@ -2,6 +2,21 @@
   justify-items: center;
 }
 
+.heading {
+  position: relative;
+  width: min(100%, 76rem);
+}
+
+.links {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: min(34vh, 26vw);
+  aspect-ratio: 2.4;
+  translate: 0 calc(-50% + var(--py, 0px));
+  pointer-events: none;
+}
+
 .row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

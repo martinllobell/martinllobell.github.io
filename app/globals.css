@@ -48,7 +48,7 @@ html {
 
 body {
   margin: 0;
-  background: var(--paper) var(--paper-grain);
+  background: var(--paper-grain), repeating-linear-gradient(90deg, rgba(var(--ink-rgb), 0.032) 0 1px, transparent 1px 2.25rem), var(--paper);
   color: var(--ink);
   font: 400 clamp(0.95rem, 0.6rem + 0.9vh, 1.0625rem) / 1.6 var(--font-body), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -162,19 +162,25 @@ main {
   translate: 0 var(--py, 0px);
 }
 
-.ghost {
+.guilloche {
   position: absolute;
   z-index: -1;
-  inset: auto 0 2vh;
-  overflow: visible;
-  font: 600 min(30vw, 48vh) / 1 var(--font-display), serif;
-  letter-spacing: -0.03em;
-  text-align: center;
-  white-space: nowrap;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(var(--ink-rgb), 0.09);
+  top: 50%;
+  width: min(120vh, 110vw);
+  aspect-ratio: 1;
+  margin-top: max(-60vh, -55vw);
+  fill: none;
+  stroke: rgba(var(--accent-rgb), 0.11);
+  stroke-width: 0.22;
   pointer-events: none;
-  user-select: none;
+}
+
+.guilloche.left {
+  left: max(-50vh, -55vw);
+}
+
+.guilloche.right {
+  right: max(-50vh, -55vw);
 }
 
 .title {

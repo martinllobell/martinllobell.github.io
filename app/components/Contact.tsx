@@ -1,5 +1,7 @@
 import { profile } from "../content";
 import BusinessCard from "./BusinessCard";
+import Guilloche from "./Guilloche";
+import Sculpture from "./Sculpture";
 import s from "./Contact.module.css";
 
 const mailto = `mailto:${profile.email}?subject=${encodeURIComponent("Let's talk")}`;
@@ -18,9 +20,8 @@ export default function Contact() {
   const booking = profile.calendarUrl || mailto;
   return (
     <section id="contact" className={`panel ${s.contact}`} data-live>
-      <span className="ghost" aria-hidden="true">
-        Hola
-      </span>
+      <Guilloche lines={40} ratio={0.72} side="right" />
+      <Sculpture shape="bowtie" tone="--ink" className={s.bowtie} />
       <h2 className={`title reveal ${s.heading}`}>Let&apos;s talk</h2>
       <p className="muted reveal" style={{ "--i": 1 } as React.CSSProperties}>
         Open to remote roles in backend, platform and AI engineering.

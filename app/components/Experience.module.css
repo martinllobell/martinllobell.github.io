@@ -1,5 +1,5 @@
 .experience {
-  --step: 80svh;
+  --step: 40svh;
   position: relative;
   height: calc(100svh + (var(--n) - 1) * var(--step));
 }
@@ -84,7 +84,7 @@
 
 .flip {
   display: grid;
-  width: min(100%, 25rem, 95cqh);
+  width: min(100%, 30rem, 95cqh);
   justify-self: center;
   cursor: pointer;
   perspective: 1200px;
@@ -342,14 +342,23 @@
 }
 
 @media (max-width: 860px) {
+  .track {
+    --slide: 100cqw;
+  }
+
   .slide {
+    padding-inline: 0;
     grid-template-columns: minmax(0, 1fr);
     align-content: center;
     gap: clamp(0.75rem, 3cqh, 1.25rem);
   }
 
   .flip {
-    width: min(100%, 20rem, 44cqh);
+    width: min(100%, 26rem, 62cqh);
+  }
+
+  .role {
+    display: none;
   }
 
   .details {

@@ -144,7 +144,7 @@ export const projects: Project[] = [
   },
   {
     name: "Financer",
-    status: "In production",
+    status: "Personal project",
     scene: "finance",
     text: "Personal finance dashboard. Connects Mercado Pago over OAuth and banks through Belvo, reads Santander and Brubank PDF statements, and keeps balances current with webhooks.",
     detail: "FastAPI and PostgreSQL on AWS, with Docker and Caddy.",
@@ -207,7 +207,7 @@ export const techNotes: Record<string, string> = {
   Docker: "Containers for every service I ship.",
   Kubernetes: "Runs and scales those containers in production.",
   "Google Cloud": "Where the exchange services ran, on Kubernetes.",
-  AWS: "Where Financer runs.",
+  AWS: "Lightsail and Amplify, behind Docker and Caddy.",
   Terraform: "Infrastructure as code.",
   Anthropic: "Model provider behind much of my agent work.",
   Claude: "The model I build with, in products and in my own workflow.",

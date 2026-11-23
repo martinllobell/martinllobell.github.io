@@ -47,16 +47,20 @@ export default function Experience() {
     const step = (e: WheelEvent) => {
       const box = sec.getBoundingClientRect();
       if (travel() <= 0 || box.top > 1 || box.bottom < innerHeight - 1 || Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
-      const moving = Math.abs(scrollY - stopTop(target)) > 2;
-      const next = (moving ? target : Math.round(progress() * last)) + Math.sign(e.deltaY);
-      if (!locked && (next < 0 || next > last)) return;
       e.preventDefault();
       clearTimeout(quiet);
       quiet = window.setTimeout(() => (locked = false), 240);
-      if (locked || next < 0 || next > last) return;
+      if (locked) return;
       locked = true;
-      target = next;
-      scrollTo({ top: stopTop(next), behavior: "smooth" });
+      const moving = Math.abs(scrollY - stopTop(target)) > 2;
+      const next = (moving ? target : Math.round(progress() * last)) + Math.sign(e.deltaY);
+      if (next >= 0 && next <= last) {
+        target = next;
+        scrollTo({ top: stopTop(next), behavior: "smooth" });
+        return;
+      }
+      const out = next < 0 ? sec.previousElementSibling : sec.nextElementSibling;
+      if (out) scrollTo({ top: out.getBoundingClientRect().top + scrollY, behavior: "smooth" });
     };
 
     const focus = (e: FocusEvent) => {

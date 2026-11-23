@@ -35,8 +35,8 @@ export default function Hero() {
           <a className="btn" href="#contact">
             Book a call
           </a>
-          <a href={profile.github}>GitHub</a>
-          <a href={profile.linkedin}>LinkedIn</a>
+          <a href={profile.github} target="_blank" rel="noreferrer">GitHub</a>
+          <a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
         </p>
       </div>
       <div className={s.marquee} aria-label="Teams I have shipped with">

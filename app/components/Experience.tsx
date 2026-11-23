@@ -7,13 +7,14 @@ import BusinessCard from "./BusinessCard";
 import Scene from "./Scene";
 import Sculpture from "./Sculpture";
 import TechIcon from "./TechIcon";
-import { revealText } from "./Motion";
+import { effects } from "./Motion";
 import RoleDialog from "./RoleDialog";
 import Guilloche from "./Guilloche";
 import s from "./Experience.module.css";
 
 const last = experience.length - 1;
-const still = () => !!document.documentElement.dataset.motion || matchMedia("(prefers-reduced-motion: reduce)").matches;
+const reduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+const still = () => !!document.documentElement.dataset.motion || reduced();
 const pad = (n: number) => String(n).padStart(2, "0");
 
 export default function Experience() {
@@ -72,8 +73,8 @@ export default function Experience() {
       d.showModal();
       d.scrollTop = 0;
       fit();
-      if (still()) d.querySelectorAll("svg").forEach((svg) => svg.pauseAnimations());
-      else undoReveal.current = revealText(d);
+      if (document.documentElement.dataset.motion === "paused" || reduced()) d.querySelectorAll("svg").forEach((svg) => svg.pauseAnimations());
+      if (!still()) undoReveal.current = effects.current?.revealText(d);
     });
   };
 
@@ -97,6 +98,14 @@ export default function Experience() {
     let quiet = 0;
     let locked = false;
     let target = 0;
+    let armed = false;
+
+    const arm = (e: PointerEvent) => {
+      armed = e.pointerType === "mouse" && Math.abs(sec.getBoundingClientRect().top) <= 2;
+    };
+    const disarm = () => {
+      if (Math.abs(sec.getBoundingClientRect().top) > 2) armed = false;
+    };
 
     const progress = () => {
       const max = t.scrollWidth - t.clientWidth;
@@ -117,7 +126,7 @@ export default function Experience() {
     };
 
     const step = (e: WheelEvent) => {
-      if (dialog.current?.open) return;
+      if (dialog.current?.open || !armed || !(e.target as Element).closest(`.${s.lift}`)) return;
       if (Math.abs(sec.getBoundingClientRect().top) > 2 || Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
       e.preventDefault();
       clearTimeout(quiet);
@@ -135,7 +144,7 @@ export default function Experience() {
       if (out) scrollTo({ top: out.getBoundingClientRect().top + scrollY, behavior: "smooth" });
     };
 
-    for (const r of experience) if (r.image) new Image().src = `/work/${r.image}`;
+    if (!document.documentElement.dataset.motion) for (const r of experience) if (r.image) new Image().src = `/work/${r.image}`;
     update();
     t.addEventListener("scroll", schedule, { passive: true });
     let fitting = 0;
@@ -146,6 +155,8 @@ export default function Experience() {
     addEventListener("resize", schedule);
     addEventListener("resize", refit);
     sec.addEventListener("wheel", step, { passive: false });
+    t.addEventListener("pointermove", arm, { passive: true });
+    addEventListener("scroll", disarm, { passive: true });
     return () => {
       cancelAnimationFrame(frame);
       cancelAnimationFrame(fitting);
@@ -154,6 +165,8 @@ export default function Experience() {
       removeEventListener("resize", schedule);
       removeEventListener("resize", refit);
       sec.removeEventListener("wheel", step);
+      t.removeEventListener("pointermove", arm);
+      removeEventListener("scroll", disarm);
     };
   }, []);
 
@@ -198,7 +211,7 @@ export default function Experience() {
               <div className={s.details}>
                 <Scene kind={r.scene} className={s.scene} />
                 <h3 className={s.role}>
-                  {r.title}, {r.url ? <a href={r.url}>{r.company}</a> : r.company}
+                  {r.title}, {r.url ? <a href={r.url} target="_blank" rel="noreferrer">{r.company}</a> : r.company}
                 </h3>
                 <ul className={s.points}>
                   {r.points.map((point) => (
@@ -219,6 +232,14 @@ export default function Experience() {
         </ol>
       </div>
       <RoleDialog ref={dialog} role={experience[shown]} onClose={close} />
+      <div className={s.steps}>
+        <button type="button" aria-label="Previous role" disabled={active === 0} onClick={() => go(active - 1)}>
+          ←
+        </button>
+        <button type="button" aria-label="Next role" disabled={active === last} onClick={() => go(active + 1)}>
+          →
+        </button>
+      </div>
       <div className={s.progress}>
         <span className={s.fill} />
         {experience.map((r, i) => (

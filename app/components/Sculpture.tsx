@@ -69,7 +69,7 @@ float box(vec3 p,vec3 b){vec3 q=abs(p)-b;return length(max(q,0.))+min(max(q.x,ma
 float link(vec3 p){return length(vec2(length(vec2(p.x,max(abs(p.y)-.2,0.)))-.27,p.z))-.085;}
 vec2 near(vec2 m,float d,float id){return d<m.x?vec2(d,id):m;}
 vec2 map(vec3 p){
-  p=rx(M.y*.45)*ry(M.x*.6)*p;${shapes[shape]}
+  p=rx(M.y*.75)*ry(M.x*.95)*p;${shapes[shape]}
 }
 vec3 env(vec3 r){
   vec3 sky=mix(mix(C*.3,vec3(.72,.76,.84),r.y*.5+.5),mix(vec3(.05,.055,.07),vec3(.3),r.y*.5+.5),D);
@@ -186,8 +186,10 @@ function mount(canvas: HTMLCanvasElement, shape: Shape, tone: string) {
   };
 
   const onMove = (e: PointerEvent) => {
-    tilt.tx = (e.clientX / innerWidth) * 2 - 1;
-    tilt.ty = (e.clientY / innerHeight) * 2 - 1;
+    if (!visible) return;
+    const r = canvas.getBoundingClientRect();
+    tilt.tx = Math.max(-1, Math.min(1, (e.clientX - r.left - r.width / 2) / (innerWidth * 0.4)));
+    tilt.ty = Math.max(-1, Math.min(1, (e.clientY - r.top - r.height / 2) / (innerHeight * 0.4)));
   };
   const onDown = (e: PointerEvent) => {
     if ((e.target as HTMLElement).closest("a,button")) return;

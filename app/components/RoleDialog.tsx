@@ -34,7 +34,7 @@ export default function RoleDialog({ ref, role: r, onClose }: { ref: React.Ref<H
             <h3 id="role-title" className={s.title} data-letters>
               {r.title}
             </h3>
-            <p className={s.company} data-words>{r.url ? <a href={r.url}>{r.company}</a> : r.company}</p>
+            <p className={s.company} data-words>{r.url ? <a href={r.url} target="_blank" rel="noreferrer">{r.company}</a> : r.company}</p>
             <p className={s.when}>
               {r.when}
               {r.viaAvenga && (

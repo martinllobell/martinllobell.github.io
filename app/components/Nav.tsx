@@ -21,22 +21,30 @@ const toggleTheme = () => {
   } catch {}
 };
 
-const setMotion = (paused: boolean) => {
+const modes = ["full", "lite", "paused"] as const;
+type Mode = (typeof modes)[number];
+
+const setMotion = (mode: Mode) => {
   const root = document.documentElement;
-  if (paused) root.dataset.motion = "paused";
-  else delete root.dataset.motion;
+  if (mode === "full") delete root.dataset.motion;
+  else root.dataset.motion = mode;
+  try {
+    localStorage.setItem("motion", mode === "lite" ? "lite" : "full");
+  } catch {}
+  const paused = mode === "paused";
   document.querySelectorAll<SVGSVGElement>(paused ? "svg" : ".is-live svg").forEach((svg) => (paused ? svg.pauseAnimations() : svg.unpauseAnimations()));
 };
 
 export default function Nav() {
-  const [paused, setPaused] = useState(false);
+  const [mode, setMode] = useState<Mode>("full");
 
   useEffect(() => {
+    if (document.documentElement.dataset.motion === "lite") setMode("lite");
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const live = new IntersectionObserver((entries) => {
       for (const e of entries) {
         e.target.classList.toggle("is-live", e.isIntersecting);
-        e.target.querySelectorAll("svg").forEach((svg) => (e.isIntersecting && !still && !document.documentElement.dataset.motion ? svg.unpauseAnimations() : svg.pauseAnimations()));
+        e.target.querySelectorAll("svg").forEach((svg) => (e.isIntersecting && !still && document.documentElement.dataset.motion !== "paused" ? svg.unpauseAnimations() : svg.pauseAnimations()));
       }
     });
     const dots = new Map([...document.querySelectorAll<HTMLAnchorElement>(`.${s.dots} a`)].map((a) => [a.hash.slice(1), a]));
@@ -71,15 +79,18 @@ export default function Nav() {
           <button
             type="button"
             className={s.theme}
-            aria-pressed={paused}
-            aria-label="Pause animations"
+            aria-label={`Animations: ${mode}. Change`}
+            title={`Animations: ${mode}`}
             onClick={() => {
-              setMotion(!paused);
-              setPaused(!paused);
+              const next = modes[(modes.indexOf(mode) + 1) % modes.length];
+              setMotion(next);
+              setMode(next);
             }}
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              {paused ? <path d="M8 5v14l11-7z" /> : <path d="M9 5v14M15 5v14" />}
+            <svg viewBox="0 0 24 24" aria-hidden="true" className={s.bars} data-mode={mode}>
+              <path d="M5 19v-5" />
+              <path d="M12 19V9" />
+              <path d="M19 19V4" />
             </svg>
           </button>
           <button type="button" className={s.theme} onClick={toggleTheme} aria-label="Switch between light and dark theme">

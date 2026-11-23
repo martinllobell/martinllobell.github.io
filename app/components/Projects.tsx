@@ -21,7 +21,7 @@ export default function Projects() {
           <article key={p.name} className={`reveal ${s.project}`} style={{ "--i": i + 1 } as React.CSSProperties} data-parallax={6 + i * 7} {...tilt}>
             <Scene kind={p.scene} className={s.scene} />
             <header className={s.head}>
-              <h3>{p.href ? <a href={p.href}>{p.name}</a> : p.name}</h3>
+              <h3>{p.href ? <a className={s.open} href={p.href} target="_blank" rel="noreferrer">{p.name}</a> : p.name}</h3>
               <span className={s.status}>{p.status}</span>
             </header>
             <p>{p.text}</p>

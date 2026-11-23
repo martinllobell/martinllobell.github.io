@@ -1,6 +1,7 @@
 .contact {
   justify-items: center;
   text-align: center;
+  overflow: clip;
   padding-bottom: calc(4vh + 2rem);
 }
 
@@ -37,15 +38,23 @@
   gap: 0.25rem;
 }
 
-.calendar {
-  width: 6rem;
-  margin-bottom: 0.3rem;
+.envelope {
+  width: 3.6rem;
+  margin-bottom: 0.5rem;
+  overflow: visible;
+  fill: none;
+  stroke: rgba(43, 40, 36, 0.55);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
 }
 
-.slot {
-  fill: rgba(43, 40, 36, 0.06);
-  stroke: rgba(43, 40, 36, 0.25);
-  animation: slot 6s ease infinite;
+.flap {
+  transform-origin: 50% 3px;
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.card:hover .flap {
+  transform: scaleY(-0.75);
 }
 
 .cardTitle {
@@ -63,6 +72,13 @@
   text-decoration-color: rgba(43, 40, 36, 0.55);
 }
 
+.email::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -78,23 +94,17 @@
   color: var(--muted);
 }
 
-@keyframes slot {
-  0%,
-  8% {
-    fill: rgba(var(--accent-rgb), 0.5);
-  }
-  20% {
-    fill: rgba(43, 40, 36, 0.06);
-  }
-}
-
 @media (max-height: 760px) {
   .bowtie {
     width: 18vh;
   }
 }
 
-@media (max-height: 600px) {
+@media (max-height: 680px) {
+  .contact {
+    gap: 0.8rem;
+  }
+
   .bowtie {
     display: none;
   }

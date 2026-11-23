@@ -6,7 +6,7 @@ const display = Cormorant_Garamond({ subsets: ["latin"], variable: "--font-displ
 const body = IBM_Plex_Sans({ subsets: ["latin"], variable: "--font-body", weight: ["400", "500"] });
 const mono = IBM_Plex_Mono({ subsets: ["latin"], variable: "--font-mono", weight: ["400"] });
 
-const themeScript = `try{document.documentElement.dataset.theme=localStorage.getItem("theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}catch(e){}`;
+const themeScript = `try{document.documentElement.dataset.theme=localStorage.getItem("theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");const c=navigator.connection,m=localStorage.getItem("motion")||(c&&(c.saveData||/2g|3g/.test(c.effectiveType))?"lite":"");if(m==="lite")document.documentElement.dataset.motion=m}catch(e){}`;
 
 export const metadata: Metadata = {
   title: "Martín Llobell, Backend and AI engineer",

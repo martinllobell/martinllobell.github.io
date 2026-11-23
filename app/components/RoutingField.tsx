@@ -28,6 +28,7 @@ export default function RoutingField({ className }: { className: string }) {
 
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const mouse = { x: -1e4, y: -1e4 };
+    const pull = { x: 0, y: 0, k: 0 };
     const color = { ink: "", accent: "" };
     let w = 0;
     let h = 0;
@@ -50,8 +51,14 @@ export default function RoutingField({ className }: { className: string }) {
       color.accent = css.getPropertyValue("--accent-rgb").trim();
     };
 
-    const inCurve = (i: number) => [sources[i], { x: (sources[i].x + gate.x) / 2, y: sources[i].y }, gate] as const;
-    const outCurve = (i: number) => [gate, { x: (gate.x + providers[i].x) / 2, y: providers[i].y }, providers[i]] as const;
+    const bend = (x: number, y: number): Pt => {
+      const dx = pull.x - x;
+      const dy = pull.y - y;
+      const f = pull.k * Math.exp(-(dx * dx + dy * dy) / (w * w * 0.05));
+      return { x: x + dx * f * 0.5, y: y + dy * f };
+    };
+    const inCurve = (i: number) => [sources[i], bend((sources[i].x + gate.x) / 2, sources[i].y), gate] as const;
+    const outCurve = (i: number) => [gate, bend((gate.x + providers[i].x) / 2, providers[i].y), providers[i]] as const;
 
     const layout = () => {
       const rect = canvas.getBoundingClientRect();
@@ -169,6 +176,12 @@ export default function RoutingField({ className }: { className: string }) {
     const frame = (now: number) => {
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
+      const inside = mouse.x >= 0 && mouse.x <= w && mouse.y >= 0 && mouse.y <= h;
+      pull.k += ((inside && !document.documentElement.dataset.motion ? 0.9 : 0) - pull.k) * Math.min(1, dt * 4);
+      if (inside) {
+        pull.x += (mouse.x - pull.x) * Math.min(1, dt * 6);
+        pull.y += (mouse.y - pull.y) * Math.min(1, dt * 6);
+      }
       const intro = still ? 1 : Math.min((now - born) / 1600, 1);
       const ease = 1 - Math.pow(1 - intro, 3);
       ctx.clearRect(0, 0, w, h);

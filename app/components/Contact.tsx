@@ -6,12 +6,12 @@ import s from "./Contact.module.css";
 
 const mailto = `mailto:${profile.email}?subject=${encodeURIComponent("Let's talk")}`;
 
-function Calendar() {
+function Envelope() {
   return (
-    <svg className={s.calendar} viewBox="0 0 220 120" aria-hidden="true">
-      {Array.from({ length: 15 }, (_, i) => (
-        <rect key={i} x={8 + (i % 5) * 42} y={8 + Math.floor(i / 5) * 36} width="36" height="28" rx="3" className={s.slot} style={{ animationDelay: `${((i * 7) % 15) * 0.4}s` }} />
-      ))}
+    <svg className={s.envelope} viewBox="0 0 64 44" aria-hidden="true">
+      <rect x="1" y="1" width="62" height="42" rx="3" />
+      <path d="M1 41 L24 21 M63 41 L40 21" />
+      <path d="M1 3 L32 27 L63 3" className={s.flap} />
     </svg>
   );
 }
@@ -29,13 +29,13 @@ export default function Contact() {
       <div data-parallax="14" className={`reveal ${s.cardWrap}`} style={{ "--i": 2 } as React.CSSProperties}>
         <BusinessCard className={s.card}>
           <div className={s.cardTop}>
-            <span>15 minutes</span>
-            <span>Video call</span>
+            <span>{profile.role}</span>
+            <span>Remote</span>
           </div>
           <div className={s.cardCenter}>
-            <Calendar />
-            <h3 className={s.cardTitle}>Book a call</h3>
-            <a className={s.email} href={`mailto:${profile.email}`}>
+            <Envelope />
+            <h3 className={s.cardTitle}>Write to me</h3>
+            <a className={s.email} href={mailto}>
               {profile.email}
             </a>
           </div>
@@ -49,8 +49,8 @@ export default function Contact() {
         <a className="btn" href={booking} {...(profile.calendarUrl && { target: "_blank", rel: "noreferrer" })}>
           {profile.calendarUrl ? "Pick a time" : "Request a call"}
         </a>
-        <a href={profile.github}>GitHub</a>
-        <a href={profile.linkedin}>LinkedIn</a>
+        <a href={profile.github} target="_blank" rel="noreferrer">GitHub</a>
+        <a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
       </p>
       <footer className={s.foot}>© {new Date().getFullYear()}</footer>
     </section>

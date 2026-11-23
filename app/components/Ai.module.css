@@ -95,3 +95,10 @@
     font-size: 1.35em;
   }
 }
+
+@media (min-width: 861px) and (max-height: 640px) {
+  .text {
+    gap: 0.45rem;
+    font-size: 0.9rem;
+  }
+}

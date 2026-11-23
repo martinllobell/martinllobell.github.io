@@ -43,6 +43,7 @@
 html {
   scroll-behavior: smooth;
   scroll-snap-type: y mandatory;
+  overscroll-behavior-y: none;
   background: var(--paper);
 }
 
@@ -173,6 +174,12 @@ main {
   stroke: rgba(var(--accent-rgb), 0.11);
   stroke-width: 0.22;
   pointer-events: none;
+}
+
+.guilloche g {
+  translate: calc(var(--cx, 0) * 4px) calc(var(--cy, 0) * 4px);
+  rotate: calc(var(--cx, 0) * 9deg);
+  transition: translate 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), rotate 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .guilloche.left {

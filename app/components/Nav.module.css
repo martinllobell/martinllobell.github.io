@@ -52,6 +52,16 @@
   overflow: visible;
 }
 
+.bars path {
+  stroke-width: 2.4;
+  transition: opacity 0.25s;
+}
+
+.bars[data-mode="lite"] path:nth-child(n + 2),
+.bars[data-mode="paused"] path {
+  opacity: 0.25;
+}
+
 .sun,
 .rays,
 .moon {

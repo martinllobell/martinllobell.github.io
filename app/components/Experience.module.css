@@ -283,6 +283,40 @@
   color: var(--accent);
 }
 
+.steps {
+  position: absolute;
+  z-index: 2;
+  top: calc(var(--nav-h) + 0.5vh);
+  right: max(var(--gutter), 50% - 36rem);
+  display: flex;
+  gap: 0.5rem;
+}
+
+.steps button {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s, scale 0.15s, opacity 0.2s;
+}
+
+.steps button:hover {
+  border-color: var(--accent);
+}
+
+.steps button:active {
+  scale: 0.94;
+}
+
+.steps button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
 .progress {
   position: relative;
   justify-self: center;
@@ -461,5 +495,11 @@
 
   .track {
     height: auto;
+  }
+}
+
+@media (hover: none) and (max-width: 860px) {
+  .steps {
+    display: none;
   }
 }

@@ -2,8 +2,8 @@
 
 import s from "./BusinessCard.module.css";
 
-export default function BusinessCard({ children, className }: { children: React.ReactNode; className: string }) {
-  const move = (e: React.PointerEvent<HTMLDivElement>) => {
+export const tilt = {
+  onPointerMove(e: React.PointerEvent<HTMLElement>) {
     const el = e.currentTarget;
     const r = el.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width;
@@ -12,12 +12,15 @@ export default function BusinessCard({ children, className }: { children: React.
     el.style.setProperty("--ry", `${(x - 0.5) * 10}deg`);
     el.style.setProperty("--gx", `${x * 100}%`);
     el.style.setProperty("--gy", `${y * 100}%`);
-  };
-  const leave = (e: React.PointerEvent<HTMLDivElement>) => {
+  },
+  onPointerLeave(e: React.PointerEvent<HTMLElement>) {
     for (const p of ["--rx", "--ry", "--gx", "--gy"]) e.currentTarget.style.removeProperty(p);
-  };
+  },
+};
+
+export default function BusinessCard({ children, className }: { children: React.ReactNode; className: string }) {
   return (
-    <div className={`${s.card} ${className}`} onPointerMove={move} onPointerLeave={leave}>
+    <div className={`${s.card} ${className}`} {...tilt}>
       {children}
       <span className={s.sheen} aria-hidden="true" />
     </div>

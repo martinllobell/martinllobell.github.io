@@ -152,6 +152,7 @@ export default function RoutingField({ className }: { className: string }) {
           r.leg = 1;
           r.t = 0;
           pulse = 1;
+          canvas.dispatchEvent(new Event("gate", { bubbles: true }));
         }
         const c = r.leg === 0 ? inCurve(r.from) : outCurve(r.to);
         const rgb = r.leg === 0 ? color.accent : color.ink;

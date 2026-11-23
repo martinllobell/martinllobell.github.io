@@ -24,8 +24,16 @@ export default function Stack() {
   const [tip, setTip] = useState<Tip | null>(null);
   const [link, setLink] = useState<Link>(null);
   const orbit = useRef<SVGSVGElement>(null);
+  const timer = useRef(0);
+
+  const later = (e: React.PointerEvent, hide: () => void) => {
+    clearTimeout(timer.current);
+    if (e.pointerType === "touch") timer.current = window.setTimeout(hide, 2200);
+    else hide();
+  };
 
   const show = (name: string, el: Element) => {
+    clearTimeout(timer.current);
     const r = el.getBoundingClientRect();
     setTip({ name, x: r.left + r.width / 2, y: r.top });
   };
@@ -51,7 +59,7 @@ export default function Stack() {
     <section id="stack" className={`panel ${s.stack}`} data-live>
       <h2 className="title reveal">Stack</h2>
       <div className={s.grid}>
-        <svg ref={orbit} className={s.orbit} viewBox="-280 -250 560 500" aria-hidden="true">
+        <svg ref={orbit} className={s.orbit} viewBox="-285 -252 570 527" aria-hidden="true">
           {link && <line x1="0" y1="0" x2={link.x} y2={link.y} className={s.link} />}
           <circle r="40" className={s.core} />
           <circle r="40" className={s.halo} />
@@ -66,7 +74,7 @@ export default function Stack() {
               <g key={k}>
                 <circle r={r} className={s.path} />
                 {ring.map((name, i) => (
-                  <g key={name} className={s.item} style={brand(name)} onPointerEnter={(e) => enterOrbit(name, e.currentTarget)} onPointerLeave={leaveOrbit}>
+                  <g key={name} className={s.item} style={brand(name)} onPointerEnter={(e) => enterOrbit(name, e.currentTarget)} onPointerLeave={(e) => later(e, leaveOrbit)}>
                     <animateMotion dur={`${dur}s`} begin={`-${((i / ring.length) * dur).toFixed(2)}s`} repeatCount="indefinite" path={path} />
                     <circle r="22" className={s.hit} />
                     <g className={s.body}>
@@ -95,7 +103,7 @@ export default function Stack() {
                     tabIndex={0}
                     aria-describedby={tip?.name === t ? "tech-tip" : undefined}
                     onPointerEnter={(e) => show(t, e.currentTarget)}
-                    onPointerLeave={() => setTip(null)}
+                    onPointerLeave={(e) => later(e, () => setTip(null))}
                     onFocus={(e) => show(t, e.currentTarget)}
                     onBlur={() => setTip(null)}
                   >

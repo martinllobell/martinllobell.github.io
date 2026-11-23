@@ -1,4 +1,5 @@
 import { clientLogos, profile } from "../content";
+import GatewayCore from "./GatewayCore";
 import RoutingField from "./RoutingField";
 import s from "./Hero.module.css";
 
@@ -19,6 +20,7 @@ export default function Hero() {
   return (
     <section id="top" className={`panel ${s.hero}`} data-live>
       <RoutingField className={s.field} />
+      <GatewayCore className={s.core} />
       <div className={s.text}>
         <p className={s.role}>
           <span className={s.live} aria-hidden="true" />

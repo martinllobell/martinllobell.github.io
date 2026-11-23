@@ -1,4 +1,7 @@
+"use client";
+
 import { projects } from "../content";
+import { tilt } from "./BusinessCard";
 import Scene from "./Scene";
 import TechIcon from "./TechIcon";
 import s from "./Projects.module.css";
@@ -9,7 +12,7 @@ export default function Projects() {
       <h2 className="title reveal">Projects</h2>
       <div className={s.row}>
         {projects.map((p, i) => (
-          <article key={p.name} className={`reveal ${s.project}`} style={{ "--i": i + 1 } as React.CSSProperties}>
+          <article key={p.name} className={`reveal ${s.project}`} style={{ "--i": i + 1 } as React.CSSProperties} {...tilt}>
             <Scene kind={p.scene} className={s.scene} />
             <header className={s.head}>
               <h3>{p.href ? <a href={p.href}>{p.name}</a> : p.name}</h3>

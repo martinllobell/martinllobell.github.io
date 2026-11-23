@@ -1,0 +1,140 @@
+.bar {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 20;
+  height: var(--nav-h);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--gutter);
+  background: linear-gradient(var(--paper) 30%, transparent);
+}
+
+.mark svg {
+  display: block;
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.4;
+}
+
+.mark circle {
+  fill: var(--accent);
+  stroke: none;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.theme {
+  display: grid;
+  place-items: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.theme svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  overflow: visible;
+}
+
+.sun,
+.rays,
+.moon {
+  transform-origin: 12px 12px;
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s;
+}
+
+.moon {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.5);
+}
+
+:global([data-theme="dark"]) .sun,
+:global([data-theme="dark"]) .rays {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.5);
+}
+
+:global([data-theme="dark"]) .moon {
+  opacity: 1;
+  transform: none;
+}
+
+.cta {
+  padding: 0.45em 1.1em;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 0.88rem;
+  text-decoration: none;
+}
+
+.dots {
+  position: fixed;
+  right: clamp(0.5rem, 1.5vw, 1.5rem);
+  top: 50%;
+  z-index: 20;
+  display: grid;
+  gap: 0.9rem;
+  translate: 0 -50%;
+}
+
+.dots a {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.dots a::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--muted);
+  opacity: 0.45;
+  transition: height 0.3s, opacity 0.3s, background 0.3s;
+}
+
+.dots span {
+  opacity: 0;
+  translate: 6px 0;
+  transition: opacity 0.25s, translate 0.25s;
+}
+
+.dots a:hover span,
+.dots a:focus-visible span {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.dots a[aria-current]::after {
+  height: 22px;
+  border-radius: 3px;
+  background: var(--accent);
+  opacity: 1;
+}
+
+@media (max-width: 860px) {
+  .dots {
+    display: none;
+  }
+}

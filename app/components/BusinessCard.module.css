@@ -1,0 +1,29 @@
+.card {
+  position: relative;
+  aspect-ratio: 1.75;
+  padding: clamp(0.9rem, 2.2vh, 1.4rem) clamp(1rem, 2.4vw, 1.6rem);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: var(--card) var(--paper-grain);
+  background-blend-mode: multiply;
+  color: var(--card-ink);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75), 0 -1px 0 rgba(0, 0, 0, 0.06);
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(40, 32, 20, 0.07), 0 1px 1px rgba(40, 32, 20, 0.06), 0 22px 40px -22px rgba(40, 32, 20, 0.45);
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  overflow: hidden;
+}
+
+.card:hover {
+  transition-duration: 0.1s;
+}
+
+.sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--gx, 30%) var(--gy, 0%), rgba(255, 255, 255, 0.55), transparent 55%);
+  mix-blend-mode: soft-light;
+  opacity: 0.7;
+}

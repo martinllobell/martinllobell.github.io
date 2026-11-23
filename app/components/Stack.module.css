@@ -1,0 +1,268 @@
+.stack {
+  justify-items: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1.5rem, 5vw, 5rem);
+  width: min(100%, 76rem);
+}
+
+.orbit {
+  width: 100%;
+  max-height: 72svh;
+}
+
+.path {
+  fill: none;
+  stroke: var(--rule);
+  stroke-dasharray: 2 6;
+}
+
+.core {
+  fill: var(--surface);
+  stroke: rgba(var(--ink-rgb), 0.3);
+}
+
+.halo {
+  fill: none;
+  stroke: var(--accent);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: halo 2.6s ease-out infinite;
+}
+
+.mark {
+  fill: none;
+  stroke: rgba(var(--ink-rgb), 0.55);
+  stroke-width: 1.5;
+}
+
+.hub {
+  fill: var(--accent);
+}
+
+.item {
+  cursor: default;
+}
+
+.hit {
+  fill: transparent;
+}
+
+.body {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: scale 0.25s ease-out;
+}
+
+.item:hover .body {
+  scale: 1.25;
+}
+
+.link {
+  stroke: var(--accent);
+  stroke-dasharray: 3 4;
+  animation: flow 0.8s linear infinite;
+}
+
+.badge {
+  fill: var(--surface);
+  stroke: var(--rule);
+  transition: stroke 0.25s;
+}
+
+.icon {
+  fill: var(--ink);
+  transition: fill 0.25s;
+}
+
+.item:hover .icon {
+  fill: var(--brand, var(--accent));
+}
+
+.item:hover .badge {
+  stroke: var(--brand, var(--accent));
+}
+
+:global([data-theme="dark"]) .item:hover .icon {
+  fill: var(--brand-dark, var(--accent));
+}
+
+.label {
+  fill: var(--muted);
+  font: 500 11px var(--font-body);
+}
+
+.list {
+  position: relative;
+  display: grid;
+  gap: clamp(0.5rem, 1.5vh, 1rem);
+}
+
+.list div {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  align-items: start;
+  gap: 1rem;
+  padding-bottom: clamp(0.5rem, 1.5vh, 1rem);
+  border-bottom: 1px solid var(--rule);
+}
+
+.list dt {
+  padding-top: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.list dd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.65rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 0.82rem;
+  cursor: default;
+  transition: border-color 0.25s, background-color 0.25s;
+}
+
+.chip svg {
+  transition: color 0.25s, scale 0.25s;
+}
+
+.chip:hover,
+.chip:focus-visible {
+  border-color: var(--brand, var(--accent));
+}
+
+.chip:hover svg,
+.chip:focus-visible svg {
+  color: var(--brand, var(--accent));
+  scale: 1.2;
+}
+
+:global([data-theme="dark"]) .chip:hover svg,
+:global([data-theme="dark"]) .chip:focus-visible svg {
+  color: var(--brand-dark, var(--accent));
+}
+
+.tip {
+  position: fixed;
+  z-index: 40;
+  width: max-content;
+  max-width: 16rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--rule);
+  border-top: 2px solid var(--brand, var(--accent));
+  border-radius: 4px;
+  background: var(--surface);
+  box-shadow: 0 16px 30px -18px rgba(0, 0, 0, 0.45);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--muted);
+  text-align: left;
+  pointer-events: none;
+  translate: -50% calc(-100% - 10px);
+  animation: tipin 0.18s ease-out;
+}
+
+.tip strong {
+  display: block;
+  margin-bottom: 0.15rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+@keyframes flow {
+  to {
+    stroke-dashoffset: -14;
+  }
+}
+
+@keyframes tipin {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@keyframes halo {
+  from {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 860px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  .orbit {
+    max-height: 18svh;
+  }
+
+  .list {
+    gap: 0.4rem;
+  }
+
+  .list div {
+    grid-template-columns: 4.6rem 1fr;
+    gap: 0.5rem;
+    padding-bottom: 0.4rem;
+  }
+
+  .list dt {
+    padding-top: 0.15rem;
+    font-size: 0.68rem;
+  }
+
+  .list dd {
+    gap: 0.3rem;
+  }
+
+  .chip {
+    gap: 0.3rem;
+    padding: 0.1rem 0.45rem;
+    font-size: 0.68rem;
+  }
+}
+
+@media (max-width: 860px) and (max-height: 700px) {
+  .orbit {
+    display: none;
+  }
+
+  .list {
+    gap: 0.25rem;
+  }
+
+  .list div {
+    grid-template-columns: 4rem 1fr;
+    padding-bottom: 0.25rem;
+  }
+
+  .list dd {
+    gap: 0.2rem;
+  }
+
+  .chip {
+    padding: 0.05rem 0.4rem;
+    font-size: 0.64rem;
+  }
+}

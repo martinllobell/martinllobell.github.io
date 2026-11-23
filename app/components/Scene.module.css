@@ -1,0 +1,289 @@
+.scene {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+.wire {
+  fill: none;
+  stroke: rgba(var(--ink-rgb), 0.28);
+}
+
+.dash {
+  stroke-dasharray: 3 4;
+  animation: dashflow 1.2s linear infinite;
+}
+
+.node {
+  fill: rgba(var(--ink-rgb), 0.03);
+  stroke: rgba(var(--ink-rgb), 0.45);
+}
+
+.solid {
+  fill: var(--paper);
+}
+
+.dot {
+  fill: var(--accent);
+}
+
+.dotMuted {
+  fill: rgba(var(--ink-rgb), 0.55);
+}
+
+.hub {
+  fill: var(--accent);
+}
+
+.ring {
+  fill: none;
+  stroke: var(--accent);
+}
+
+.pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulse 2s ease-out infinite;
+}
+
+.line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+
+.scrollX {
+  animation: scrollx 6s linear infinite;
+}
+
+.candle {
+  fill: rgba(var(--ink-rgb), 0.18);
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: candle 1.8s ease-in-out infinite alternate;
+}
+
+.msg {
+  fill: var(--accent);
+  opacity: 0;
+  animation: msg 3.3s linear infinite;
+}
+
+.tick,
+.match {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+
+.tick {
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  animation: tick 3.3s ease infinite;
+}
+
+.match {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 2.8s ease-in-out infinite;
+}
+
+.skel {
+  fill: rgba(var(--ink-rgb), 0.1);
+  animation: shimmer 2.4s ease-in-out infinite;
+}
+
+.grow {
+  transform-box: fill-box;
+  transform-origin: left;
+  animation: growx 3s ease-in-out infinite;
+}
+
+.bar {
+  fill: rgba(var(--accent-rgb), 0.55);
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: barup 3s ease-in-out infinite;
+}
+
+.doc {
+  animation: docin 2.7s ease-in-out infinite;
+}
+
+.seal {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 170;
+  stroke-dashoffset: 170;
+  animation: seal 2.7s ease infinite;
+}
+
+.blink {
+  animation: blink 1.6s ease-in-out infinite;
+}
+
+.stage {
+  animation: stage 3.2s ease infinite;
+}
+
+.chip {
+  animation: chip 3s ease-in-out infinite;
+}
+
+.label {
+  fill: rgba(var(--ink-rgb), 0.6);
+  font: 500 10px var(--font-body);
+}
+
+.area {
+  fill: rgba(var(--accent-rgb), 0.08);
+}
+
+.draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 4s ease-in-out infinite;
+}
+
+.block {
+  animation: block 2.4s ease infinite;
+}
+
+@keyframes dashflow {
+  to {
+    stroke-dashoffset: -14;
+  }
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes scrollx {
+  to {
+    transform: translateX(-320px);
+  }
+}
+
+@keyframes candle {
+  to {
+    transform: scaleY(0.4);
+  }
+}
+
+@keyframes msg {
+  5%,
+  85% {
+    opacity: 0.9;
+  }
+  to {
+    transform: translateX(210px);
+    opacity: 0;
+  }
+}
+
+@keyframes tick {
+  20%,
+  70% {
+    stroke-dashoffset: 0;
+  }
+  90%,
+  to {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes draw {
+  60%,
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes shimmer {
+  50% {
+    fill: rgba(var(--accent-rgb), 0.25);
+  }
+}
+
+@keyframes growx {
+  from {
+    transform: scaleX(0.2);
+  }
+  40%,
+  to {
+    transform: none;
+  }
+}
+
+@keyframes barup {
+  from {
+    transform: scaleY(0.1);
+  }
+  40%,
+  to {
+    transform: none;
+  }
+}
+
+@keyframes docin {
+  from {
+    transform: translateY(-12px);
+    opacity: 0.2;
+  }
+  30%,
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes seal {
+  50%,
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes blink {
+  50% {
+    fill: rgba(var(--accent-rgb), 0.35);
+  }
+}
+
+@keyframes stage {
+  0%,
+  10% {
+    fill: rgba(var(--accent-rgb), 0.35);
+    stroke: var(--accent);
+  }
+  30% {
+    fill: rgba(var(--ink-rgb), 0.03);
+  }
+}
+
+@keyframes chip {
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+@keyframes block {
+  0%,
+  15% {
+    stroke: var(--accent);
+    fill: rgba(var(--accent-rgb), 0.18);
+  }
+  40% {
+    fill: rgba(var(--ink-rgb), 0.03);
+  }
+}

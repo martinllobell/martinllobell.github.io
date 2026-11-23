@@ -1,0 +1,410 @@
+.experience {
+  --step: 80svh;
+  position: relative;
+  height: calc(100svh + (var(--n) - 1) * var(--step));
+}
+
+.snap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 0;
+  overflow: hidden;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  align-content: stretch;
+  padding-bottom: 3vh;
+  scroll-snap-align: none;
+}
+
+.head {
+  display: grid;
+  justify-items: center;
+  gap: 0.25rem;
+}
+
+.counter {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.counter span {
+  display: inline-block;
+  color: var(--ink);
+  animation: tickin 0.45s ease;
+}
+
+.rail {
+  min-height: 0;
+  display: grid;
+  align-items: center;
+  container-type: size;
+}
+
+.track {
+  --slide: min(62rem, 100cqw - 2rem);
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  width: max-content;
+  height: 100cqh;
+  margin: 0;
+  padding: 0 calc((100cqw - var(--slide)) / 2);
+  list-style: none;
+  will-change: transform;
+}
+
+.slide {
+  width: var(--slide);
+  max-height: 100cqh;
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  align-items: center;
+  gap: clamp(1rem, 4cqw, 3rem);
+  padding: clamp(0.5rem, 3cqh, 1.5rem) clamp(0.5rem, 2cqw, 1.5rem);
+  opacity: 0.35;
+  scale: 0.94;
+  transition: opacity 0.6s, scale 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.slide[aria-current] {
+  opacity: 1;
+  scale: 1;
+}
+
+.flip {
+  display: grid;
+  width: min(100%, 25rem, 95cqh);
+  justify-self: center;
+  cursor: pointer;
+  perspective: 1200px;
+  rotate: -3deg;
+  transition: rotate 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.slide[aria-current] .flip {
+  rotate: 0deg;
+}
+
+.face {
+  grid-area: 1 / 1;
+  transition: transform 0.8s cubic-bezier(0.45, 0, 0.55, 1), opacity 0s linear 0.4s, visibility 0s linear 0.4s;
+}
+
+.back {
+  transform: rotateY(-180deg);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.flip[data-flipped] .face {
+  transform: rotateY(180deg);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.flip[data-flipped] .back {
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+}
+
+.card {
+  width: 100%;
+}
+
+.turn {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-shadow: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(43, 40, 36, 0.45);
+  text-underline-offset: 0.25em;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.impact {
+  display: grid;
+  place-content: center;
+  padding: 0 0.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(0.85rem, 2.6cqh, 1.08rem);
+  font-style: italic;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.role {
+  font-size: clamp(1.1rem, 3.6cqh, 1.6rem);
+  line-height: 1.2;
+}
+
+.cardTop,
+.cardBottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  font-size: clamp(0.58rem, 1.6cqh, 0.68rem);
+  letter-spacing: 0.08em;
+}
+
+.logo {
+  --logo-filter: brightness(0);
+  height: clamp(0.8rem, 2.6cqh, 1.05rem);
+  max-width: 7rem;
+  opacity: 0.8;
+}
+
+.cardCenter {
+  display: grid;
+  place-content: center;
+  gap: 0.2rem;
+  text-align: center;
+}
+
+.title {
+  display: block;
+  font-size: clamp(0.9rem, 3cqh, 1.3rem);
+  font-weight: 500;
+  font-variant: small-caps;
+  letter-spacing: 0.14em;
+}
+
+.company {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(0.85rem, 2.6cqh, 1.05rem);
+  font-style: italic;
+}
+
+.via {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.via img {
+  --logo-filter: brightness(0);
+  height: 0.7rem;
+  opacity: 0.7;
+}
+
+.cardBottom a {
+  color: inherit;
+  text-decoration-color: rgba(43, 40, 36, 0.55);
+}
+
+.details {
+  display: grid;
+  gap: clamp(0.5rem, 3cqh, 1.25rem);
+  min-width: 0;
+}
+
+.scene {
+  height: clamp(2.5rem, 13cqh, 6.5rem);
+}
+
+.tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tech li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-size: clamp(0.62rem, 1.8cqh, 0.72rem);
+  color: var(--muted);
+}
+
+@container (max-height: 430px) {
+  .scene {
+    display: none;
+  }
+
+  .points {
+    gap: 0.3em;
+    line-height: 1.4;
+  }
+
+  .tech {
+    gap: 0.25rem;
+  }
+
+  .tech li {
+    padding: 0.05rem 0.4rem;
+  }
+}
+
+.points {
+  display: grid;
+  gap: 0.45em;
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: clamp(0.78rem, 2.7cqh, 1rem);
+  line-height: 1.5;
+}
+
+.points li::marker {
+  color: var(--accent);
+}
+
+.progress {
+  position: relative;
+  justify-self: center;
+  width: min(100%, 62rem);
+  height: 2.25rem;
+  border-top: 1px solid var(--rule);
+}
+
+.fill {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--accent);
+  transform-origin: left;
+  transform: scaleX(var(--p, 0));
+}
+
+.stop {
+  position: absolute;
+  top: -5px;
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  color: var(--muted);
+  white-space: nowrap;
+  translate: -50% 0;
+}
+
+.stop::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--muted);
+  border-radius: 50%;
+  background: var(--paper);
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.lit::before {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.stop:first-of-type {
+  justify-items: start;
+  translate: 0 0;
+}
+
+.stop:last-of-type {
+  justify-items: end;
+  translate: -100% 0;
+}
+
+@keyframes tickin {
+  from {
+    opacity: 0;
+    transform: translateY(60%);
+  }
+}
+
+@media (max-width: 860px) {
+  .slide {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    gap: clamp(0.75rem, 3cqh, 1.25rem);
+  }
+
+  .flip {
+    width: min(100%, 20rem, 44cqh);
+  }
+
+  .details {
+    gap: clamp(0.4rem, 2cqh, 1rem);
+  }
+
+  .scene,
+  .stopLabel {
+    display: none;
+  }
+
+  .points {
+    font-size: clamp(0.72rem, 2.3cqh, 0.92rem);
+  }
+
+  .impact {
+    font-size: clamp(0.68rem, 2cqh, 0.86rem);
+    line-height: 1.25;
+  }
+}
+
+@media (max-height: 500px) {
+  .experience {
+    height: auto;
+  }
+
+  .snap {
+    display: none;
+  }
+
+  .pin {
+    position: static;
+    height: auto;
+    overflow: visible;
+  }
+
+  .rail {
+    container-type: inline-size;
+  }
+
+  .track {
+    flex-direction: column;
+    width: auto;
+    height: auto;
+    padding: 0;
+  }
+
+  .slide {
+    width: auto;
+    max-height: none;
+    opacity: 1;
+    scale: 1;
+  }
+
+  .progress {
+    display: none;
+  }
+}

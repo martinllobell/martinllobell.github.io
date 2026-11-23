@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 const vert = "attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}";
 
 const frag = `precision highp float;
-uniform vec2 R;uniform float T,S,P,D;uniform vec2 M;uniform vec3 A,B;
+uniform vec2 R;uniform float T,S,P,D;uniform vec2 M;uniform vec3 A,C;
 mat3 rx(float a){float c=cos(a),s=sin(a);return mat3(1.,0.,0.,0.,c,s,0.,-s,c);}
 mat3 ry(float a){float c=cos(a),s=sin(a);return mat3(c,0.,-s,0.,1.,0.,s,0.,c);}
 mat3 rz(float a){float c=cos(a),s=sin(a);return mat3(c,s,0.,-s,c,0.,0.,0.,1.);}
@@ -19,10 +19,10 @@ vec2 map(vec3 p){
   return m;
 }
 vec3 env(vec3 r){
-  vec3 sky=D>.5?mix(vec3(.02,.03,.06),vec3(.16,.19,.3),r.y*.5+.5):mix(B*.5,vec3(1.),r.y*.5+.5);
+  vec3 sky=mix(mix(C*.3,vec3(.8,.72,.6),r.y*.5+.5),mix(vec3(.05,.055,.07),vec3(.3),r.y*.5+.5),D);
   float box=smoothstep(.55,.95,r.y)*smoothstep(.9,.15,abs(r.x));
   float rim=smoothstep(.65,1.,r.x)+smoothstep(.75,1.,-r.y)*.4;
-  return sky+vec3(1.)*box*1.5+A*rim*1.4;
+  return sky+vec3(1.,.96,.9)*box*1.2+A*rim*.8;
 }
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 void main(){
@@ -38,19 +38,23 @@ void main(){
     vec3 q=ro+rd*mt;vec2 e=vec2(.001,0.);float id=map(q).y;
     vec3 n=normalize(vec3(map(q+e.xyy).x-map(q-e.xyy).x,map(q+e.yxy).x-map(q-e.yxy).x,map(q+e.yyx).x-map(q-e.yyx).x));
     vec3 r=reflect(rd,n);float nv=max(dot(n,-rd),0.),fr=pow(1.-nv,3.);
-    vec3 film=.5+.5*cos(6.2832*(nv*1.4+vec3(0.,.33,.67)+T*.06));
-    vec3 base=id<.5?vec3(1.,.77,.38):id<1.5?mix(vec3(.93,.91,.95),film,.3):id<2.5?film*1.15:A*(1.6+2.5*P);
-    col=id>2.5?base+env(r)*.25:env(r)*base+fr*.35;
-    col+=base*max(dot(n,normalize(vec3(.5,.8,.6))),0.)*.12;
-    col+=(hash(gl_FragCoord.xy+fract(T))-.5)*.07;
+    vec3 base=id<.5?C:id<1.5?mix(C,A,.35):id<2.5?mix(C,A,.65):A*(1.15+1.6*P);
+    float lit=dot(n,normalize(vec3(-.4,.8,.6)))*.5+.5;
+    vec3 shade=mix(mix(vec3(.36,.28,.2),vec3(.3,.31,.36),D),vec3(mix(1.,.93,D)),smoothstep(.1,.85+.1*D,lit));
+    col=id>2.5?base+env(r)*.15:base*shade+env(r)*(.1+.45*fr);
+    col+=(hash(gl_FragCoord.xy+fract(T))-.5)*.04;
   }
   gl_FragColor=vec4(col*cov+A*g*(1.-cov),max(cov,g*.9));
 }`;
 
 const rgb = (name: string) => {
-  const hex = getComputedStyle(document.documentElement).getPropertyValue(name).trim().slice(1);
+  const probe = document.createElement("canvas").getContext("2d")!;
+  probe.fillStyle = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const hex = String(probe.fillStyle).slice(1);
   return [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
 };
+
+const palette = () => [...rgb("--ember"), ...rgb("--bone"), document.documentElement.dataset.theme === "dark" ? 1 : 0];
 
 export default function GatewayCore({ className }: { className: string }) {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -77,7 +81,7 @@ export default function GatewayCore({ className }: { className: string }) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
-    const u = Object.fromEntries(["R", "T", "S", "P", "D", "M", "A", "B"].map((n) => [n, gl.getUniformLocation(prog, n)]));
+    const u = Object.fromEntries(["R", "T", "S", "P", "D", "M", "A", "C"].map((n) => [n, gl.getUniformLocation(prog, n)]));
 
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const tilt = { x: 0, y: 0, tx: 0, ty: 0 };
@@ -89,10 +93,13 @@ export default function GatewayCore({ className }: { className: string }) {
     let raf = 0;
     let visible = true;
 
-    const colors = () => {
-      gl.uniform3fv(u.A, rgb("--accent"));
-      gl.uniform3fv(u.B, rgb("--paper"));
-      gl.uniform1f(u.D, document.documentElement.dataset.theme === "dark" ? 1 : 0);
+    let goal = palette();
+    let mix = goal;
+    const colors = (k: number) => {
+      mix = mix.map((v, i) => v + (goal[i] - v) * k);
+      gl.uniform3fv(u.A, mix.slice(0, 3));
+      gl.uniform3fv(u.C, mix.slice(3, 6));
+      gl.uniform1f(u.D, mix[6]);
     };
     const size = () => {
       const dpr = Math.min(devicePixelRatio || 1, 1.75);
@@ -118,6 +125,7 @@ export default function GatewayCore({ className }: { className: string }) {
       pulse *= Math.exp(-dt * 3);
       tilt.x += (tilt.tx - tilt.x) * Math.min(1, dt * 4);
       tilt.y += (tilt.ty - tilt.y) * Math.min(1, dt * 4);
+      colors(Math.min(1, dt * 7));
       draw();
       raf = running() ? requestAnimationFrame(frame) : 0;
     };
@@ -140,7 +148,7 @@ export default function GatewayCore({ className }: { className: string }) {
       pulse = Math.max(pulse, 0.45);
     };
 
-    colors();
+    colors(1);
     size();
     start();
     const resize = new ResizeObserver(() => {
@@ -152,7 +160,8 @@ export default function GatewayCore({ className }: { className: string }) {
       start();
     });
     const watch = new MutationObserver(() => {
-      colors();
+      goal = palette();
+      if (!running()) colors(1);
       start();
     });
     resize.observe(canvas);
@@ -172,5 +181,5 @@ export default function GatewayCore({ className }: { className: string }) {
     };
   }, []);
 
-  return <canvas ref={ref} className={className} aria-hidden="true" />;
+  return <canvas ref={ref} className={className} data-parallax="30" aria-hidden="true" />;
 }

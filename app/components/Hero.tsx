@@ -21,7 +21,7 @@ export default function Hero() {
     <section id="top" className={`panel ${s.hero}`} data-live>
       <RoutingField className={s.field} />
       <GatewayCore className={s.core} />
-      <div className={s.text}>
+      <div className={s.text} data-parallax="14">
         <p className={s.role}>
           <span className={s.live} aria-hidden="true" />
           {profile.role}

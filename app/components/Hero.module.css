@@ -16,10 +16,10 @@
 .core {
   position: absolute;
   left: 50%;
-  top: 26%;
-  width: min(26vh, 62vw);
+  top: 21%;
+  width: min(22vh, 62vw);
   aspect-ratio: 1;
-  translate: -50% -50%;
+  translate: -50% calc(-50% + var(--py, 0px));
   pointer-events: none;
   animation: fade 1.2s ease 0.5s both;
 }

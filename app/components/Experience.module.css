@@ -76,41 +76,22 @@
   scale: 1;
 }
 
-.flip {
+.lift {
   display: grid;
   width: min(100%, 36rem, 95cqh);
   justify-self: center;
   cursor: pointer;
-  perspective: 1200px;
   rotate: -3deg;
-  transition: rotate 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform: perspective(1200px) rotateY(calc(var(--d, 0) * -32deg));
+  transition: rotate 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), translate 0.3s ease-out;
 }
 
-.slide[aria-current] .flip {
+.slide[aria-current] .lift:hover {
+  translate: 0 -4px;
+}
+
+.slide[aria-current] .lift {
   rotate: 0deg;
-}
-
-.face {
-  grid-area: 1 / 1;
-  transition: transform 0.8s cubic-bezier(0.45, 0, 0.55, 1), opacity 0s linear 0.4s, visibility 0s linear 0.4s;
-}
-
-.back {
-  transform: rotateY(-180deg);
-  opacity: 0;
-  visibility: hidden;
-}
-
-.flip[data-flipped] .face {
-  transform: rotateY(180deg);
-  opacity: 0;
-  visibility: hidden;
-}
-
-.flip[data-flipped] .back {
-  transform: none;
-  opacity: 1;
-  visibility: visible;
 }
 
 .card {
@@ -136,17 +117,6 @@
   font-size: 1rem;
   font-weight: 600;
   letter-spacing: 0.04em;
-}
-
-.impact {
-  display: grid;
-  place-content: center;
-  padding: 0 0.5rem;
-  font-family: var(--font-display);
-  font-size: clamp(0.85rem, 2.6cqh, 1.08rem);
-  font-style: italic;
-  line-height: 1.35;
-  text-align: center;
 }
 
 .role {
@@ -205,9 +175,27 @@
   opacity: 0.7;
 }
 
-.cardBottom a {
-  color: inherit;
-  text-decoration-color: rgba(43, 40, 36, 0.55);
+.details > * {
+  translate: 0 1.25rem;
+  opacity: 0;
+  transition: translate 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s;
+}
+
+.slide[aria-current] .details > * {
+  translate: none;
+  opacity: 1;
+}
+
+.slide[aria-current] .details > :nth-child(2) {
+  transition-delay: 0.08s;
+}
+
+.slide[aria-current] .details > :nth-child(3) {
+  transition-delay: 0.16s;
+}
+
+.slide[aria-current] .details > :nth-child(4) {
+  transition-delay: 0.24s;
 }
 
 .details {
@@ -356,7 +344,7 @@
     gap: 1.25rem;
   }
 
-  .flip {
+  .lift {
     width: min(100%, 34rem);
   }
 
@@ -385,8 +373,7 @@
     font-size: 1.15rem;
   }
 
-  .company,
-  .impact {
+  .company {
     font-size: 1rem;
   }
 
@@ -397,10 +384,6 @@
 
   .logo {
     height: 1.05rem;
-  }
-
-  .impact {
-    line-height: 1.35;
   }
 }
 
@@ -413,8 +396,7 @@
     font-size: 1.4rem;
   }
 
-  .company,
-  .impact {
+  .company {
     font-size: 1.15rem;
   }
 
@@ -435,7 +417,7 @@
     display: none;
   }
 
-  .flip {
+  .lift {
     width: min(100%, 34rem, 75cqh);
   }
 

@@ -1,0 +1,238 @@
+.dialog {
+  --ink: #2b2824;
+  --ink-rgb: 43, 40, 36;
+  --muted: #655e52;
+  --rule: rgba(43, 40, 36, 0.16);
+  --accent: #23395e;
+  --accent-rgb: 35, 57, 94;
+  --paper: var(--card);
+  --logo-filter: brightness(0);
+  width: min(68rem, 100vw - 2rem);
+  max-width: none;
+  max-height: min(58rem, 100svh - 2rem);
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: var(--card) var(--paper-grain);
+  background-blend-mode: multiply;
+  color: var(--card-ink);
+  box-shadow: 0 0 0 1px rgba(40, 32, 20, 0.07), 0 40px 90px -30px rgba(0, 0, 0, 0.6);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.dialog::backdrop {
+  background: rgba(8, 11, 18, 0.55);
+  backdrop-filter: blur(6px);
+}
+
+.sheet {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  grid-template-rows: auto auto 1fr;
+  gap: 1.25rem clamp(1.5rem, 3vw, 2.75rem);
+  padding: 0 clamp(1.25rem, 3vw, 2.25rem) clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-inline: calc(-1 * clamp(1.25rem, 3vw, 2.25rem));
+  padding: 0.6rem clamp(0.75rem, 2.5vw, 1.75rem) 0.6rem clamp(1.25rem, 3vw, 2.25rem);
+  background: var(--card) var(--paper-grain);
+  background-blend-mode: multiply;
+  border-bottom: 1px solid var(--rule);
+}
+
+.logo {
+  height: 1.2rem;
+  max-width: 9rem;
+  opacity: 0.85;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.close {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 0.2s, scale 0.15s;
+}
+
+.close:hover {
+  background: rgba(var(--ink-rgb), 0.08);
+}
+
+.close:active {
+  scale: 0.94;
+}
+
+.media {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.outcome {
+  grid-column: 1;
+}
+
+.photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 3px;
+  outline: 1px solid rgba(0, 0, 0, 0.1);
+  outline-offset: -1px;
+}
+
+.media .scene {
+  height: clamp(8rem, 24svh, 13rem);
+  overflow: hidden;
+}
+
+.media .tall {
+  height: clamp(10rem, 38svh, 20rem);
+}
+
+.text {
+  grid-area: 2 / 2 / span 2;
+  display: grid;
+  align-content: start;
+  gap: 1.1rem;
+  line-height: 1.55;
+}
+
+.title {
+  font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.1rem);
+  line-height: 1.15;
+}
+
+.company {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-style: italic;
+}
+
+.when {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin-top: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.via {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.via img {
+  height: 0.75rem;
+}
+
+.label {
+  margin: 0 0 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.points {
+  display: grid;
+  gap: 0.5em;
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.97rem;
+}
+
+.points li::marker {
+  color: var(--accent);
+}
+
+.impact {
+  padding-left: 1rem;
+  border-left: 2px solid var(--accent);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tech li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-size: 0.78rem;
+}
+
+:global(html):has(.dialog[open]) {
+  overflow: hidden;
+}
+
+:global(::view-transition-group(role-card)) {
+  animation-duration: 0.42s;
+  animation-timing-function: cubic-bezier(0.2, 0.85, 0.2, 1);
+}
+
+:global(::view-transition-old(role-card)),
+:global(::view-transition-new(role-card)) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 4px;
+  overflow: clip;
+}
+
+:global(::view-transition-old(role-card)),
+:global(::view-transition-new(role-card)) {
+  animation-duration: 0.16s;
+}
+
+@media (max-width: 760px) {
+  .sheet {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .text {
+    grid-area: auto;
+  }
+
+  .photo + .scene {
+    display: none;
+  }
+
+  .media .tall {
+    height: 11rem;
+  }
+}

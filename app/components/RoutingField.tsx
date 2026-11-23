@@ -61,7 +61,7 @@ export default function RoutingField({ className }: { className: string }) {
       canvas.width = w * dpr;
       canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const span = w < 760 ? 0.24 : 0.32;
+      const span = w < 760 ? 0.24 : 0.22;
       gate = { x: w * 0.5, y: h * (0.1 + span / 2) };
       sources = Array.from({ length: 7 }, (_, i) => ({ x: w * (0.05 + 0.025 * Math.sin(i * 2.3)), y: h * (0.1 + (i * span) / 6) }));
       providers = Array.from({ length: 5 }, (_, i) => ({ x: w * 0.95, y: h * (0.12 + (i * (span - 0.04)) / 4) }));

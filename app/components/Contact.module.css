@@ -57,14 +57,6 @@
   text-decoration-color: rgba(43, 40, 36, 0.55);
 }
 
-.frame {
-  width: min(100%, 44rem);
-  height: 42vh;
-  border: 1px solid var(--rule);
-  border-radius: 4px;
-  background: var(--surface);
-}
-
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -87,11 +79,5 @@
   }
   20% {
     fill: rgba(43, 40, 36, 0.06);
-  }
-}
-
-@media (max-width: 860px) {
-  .frame {
-    display: none;
   }
 }

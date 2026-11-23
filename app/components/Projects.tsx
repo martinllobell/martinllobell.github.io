@@ -9,10 +9,13 @@ import s from "./Projects.module.css";
 export default function Projects() {
   return (
     <section id="projects" className={`panel ${s.projects}`} data-live>
+      <span className="ghost" aria-hidden="true">
+        Builds
+      </span>
       <h2 className="title reveal">Projects</h2>
       <div className={s.row}>
         {projects.map((p, i) => (
-          <article key={p.name} className={`reveal ${s.project}`} style={{ "--i": i + 1 } as React.CSSProperties} {...tilt}>
+          <article key={p.name} className={`reveal ${s.project}`} style={{ "--i": i + 1 } as React.CSSProperties} data-parallax={6 + i * 7} {...tilt}>
             <Scene kind={p.scene} className={s.scene} />
             <header className={s.head}>
               <h3>{p.href ? <a href={p.href}>{p.name}</a> : p.name}</h3>

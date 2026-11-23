@@ -15,9 +15,12 @@ const log = [
 export default function About() {
   return (
     <section id="about" className={`panel ${s.about}`} data-live>
+      <span className="ghost" aria-hidden="true">
+        Product
+      </span>
       <h2 className="title reveal">Approach</h2>
       <div className={s.grid}>
-        <div className={s.text}>
+        <div className={s.text} data-parallax="6">
           {approach.map((p, i) => (
             <p key={i} className="reveal" style={{ "--i": i + 1 } as React.CSSProperties}>
               {p}
@@ -27,7 +30,7 @@ export default function About() {
             Based in {profile.location}, working remotely with teams in the US.
           </p>
         </div>
-        <figure className={`reveal ${s.receipt}`} style={{ "--i": 2 } as React.CSSProperties}>
+        <figure data-parallax="18" className={`reveal ${s.receipt}`} style={{ "--i": 2 } as React.CSSProperties}>
           <p className={s.head}>gateway.log</p>
           <div className={s.window}>
             <div className={s.roll}>

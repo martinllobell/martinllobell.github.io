@@ -1,18 +1,24 @@
 .stack {
-  justify-items: center;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  align-items: center;
-  gap: clamp(1.5rem, 5vw, 5rem);
-  width: min(100%, 76rem);
+  height: 100svh;
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-content: stretch;
+  gap: clamp(0.5rem, 1.5vh, 1rem);
+  padding-inline: clamp(0.5rem, 3vw, 3.5rem);
+  padding-bottom: 2vh;
 }
 
 .orbit {
   width: 100%;
-  max-height: 72svh;
+  height: 100%;
+  min-height: 0;
+  overflow: visible;
+  touch-action: manipulation;
+}
+
+.ring {
+  translate: calc(var(--mx, 0) * var(--k) * 9px) calc(var(--my, 0) * var(--k) * 7px);
+  transition: translate 0.5s ease-out;
 }
 
 .path {
@@ -46,6 +52,7 @@
 
 .item {
   cursor: default;
+  outline: none;
 }
 
 .hit {
@@ -58,7 +65,7 @@
   transition: scale 0.25s ease-out;
 }
 
-.item:hover .body {
+.item:is(:hover, :focus-visible) .body {
   scale: 1.25;
 }
 
@@ -79,81 +86,34 @@
   transition: fill 0.25s;
 }
 
-.item:hover .icon {
+.item:is(:hover, :focus-visible) .icon {
   fill: var(--brand, var(--accent));
 }
 
-.item:hover .badge {
+.item:is(:hover, :focus-visible) .badge {
   stroke: var(--brand, var(--accent));
 }
 
-:global([data-theme="dark"]) .item:hover .icon {
+:global([data-theme="dark"]) .item:is(:hover, :focus-visible) .icon {
   fill: var(--brand-dark, var(--accent));
+}
+
+.item:focus-visible .badge {
+  stroke: var(--accent);
+  stroke-width: 3;
 }
 
 .label {
   fill: var(--muted);
   font: 500 11px var(--font-body);
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: 3px;
 }
 
-.list {
-  position: relative;
-  display: grid;
-  gap: clamp(0.5rem, 1.5vh, 1rem);
-}
-
-.list div {
-  display: grid;
-  grid-template-columns: 7.5rem 1fr;
-  align-items: start;
-  gap: 1rem;
-  padding-bottom: clamp(0.5rem, 1.5vh, 1rem);
-  border-bottom: 1px solid var(--rule);
-}
-
-.list dt {
-  padding-top: 0.25rem;
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-.list dd {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.25rem 0.65rem;
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  background: var(--surface);
-  font-size: 0.82rem;
-  cursor: default;
-  transition: border-color 0.25s, background-color 0.25s;
-}
-
-.chip svg {
-  transition: color 0.25s, scale 0.25s;
-}
-
-.chip:hover,
-.chip:focus-visible {
-  border-color: var(--brand, var(--accent));
-}
-
-.chip:hover svg,
-.chip:focus-visible svg {
-  color: var(--brand, var(--accent));
-  scale: 1.2;
-}
-
-:global([data-theme="dark"]) .chip:hover svg,
-:global([data-theme="dark"]) .chip:focus-visible svg {
-  color: var(--brand-dark, var(--accent));
+.mono {
+  fill: var(--ink);
+  font: 600 10.5px var(--font-body);
 }
 
 .tip {
@@ -207,87 +167,18 @@
   }
 }
 
-@media (max-width: 860px), (max-width: 1100px) and (max-aspect-ratio: 3/2) {
-  .stack {
-    height: 100svh;
-    grid-template-rows: auto minmax(0, 1fr);
-    align-content: stretch;
+@media (max-width: 599px) {
+  .label {
+    font-size: 9.5px;
   }
+}
 
-  .grid {
-    min-height: 0;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: minmax(0, 1fr) auto;
-    gap: 0.75rem;
+@media (max-height: 500px) {
+  .stack {
+    height: auto;
   }
 
   .orbit {
-    height: 100%;
-    max-height: none;
-  }
-
-  .list {
-    gap: 0.4rem;
-  }
-
-  .list div {
-    grid-template-columns: 4.6rem minmax(0, 1fr);
-    align-items: center;
-    gap: 0.5rem;
-    padding-bottom: 0.4rem;
-  }
-
-  .list dt {
-    padding-top: 0;
-    font-size: 0.72rem;
-  }
-
-  .list dd {
-    flex-wrap: nowrap;
-    gap: 0.3rem;
-    padding-block: 2px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    mask-image: linear-gradient(90deg, #000 85%, transparent);
-  }
-
-  .chip {
-    flex: none;
-    gap: 0.3rem;
-    padding: 0.2rem 0.55rem;
-    font-size: 0.78rem;
-  }
-}
-
-@media (max-width: 599px) {
-  .body {
-    scale: 1.3;
-  }
-
-  .item:hover .body {
-    scale: 1.55;
-  }
-
-  .list {
-    gap: 0.3rem;
-  }
-
-  .list div {
-    padding-bottom: 0.3rem;
-  }
-
-  .chip {
-    padding-block: 0.12rem;
-  }
-}
-
-@media (min-width: 600px) and (max-width: 1100px) {
-  .list dd {
-    flex-wrap: wrap;
-    mask-image: none;
-  }
-
-  .chip {
-    font-size: 0.85rem;
+    height: 32rem;
   }
 }

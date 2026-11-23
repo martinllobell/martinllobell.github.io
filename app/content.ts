@@ -6,7 +6,7 @@ export const profile = {
   email: "martinllobell3.0@gmail.com",
   github: "https://github.com/martinllobell",
   linkedin: "https://www.linkedin.com/in/martin-llobell-devel0per",
-  calendarUrl: "",
+  calendarUrl: "https://calendly.com/martinllobell3-0/15min",
 };
 
 export const approach = [
@@ -22,10 +22,13 @@ export type Role = {
   company: string;
   when: string;
   scene: SceneKind;
+  about: string;
   points: string[];
+  more: string[];
   impact: string;
   tech: string[];
   logo?: string;
+  image?: string;
   url?: string;
   viaAvenga?: boolean;
 };
@@ -36,10 +39,15 @@ export const experience: Role[] = [
     company: "EOS",
     when: "Sep 2026 – Oct 2026",
     scene: "gateway",
+    about: "An AI agent platform for companies, built by the team behind Nexus. A company connects the tools it already has and its agents start working on them with little setup.",
     points: [
       "Built an enterprise AI agent platform that lets companies run agents on top of the tools they already use.",
       "Worked on the core LLM gateway, an OpenRouter-style API that routes requests across model providers and tracks usage and cost per agent.",
       "Implemented 20+ connectors, including Jira, Linear, GitHub, Slack and a Snowflake connector for enterprise data warehouses.",
+    ],
+    more: [
+      "Built the Snowflake connector inside the gateway, so agents can query a company's data warehouse directly.",
+      "Used the Jira, Linear, GitHub and Slack connectors with Claude every day to build the platform itself.",
     ],
     impact: "Agents worked inside the tools each team already used, and every request was tracked for usage and cost per agent.",
     tech: ["Claude", "Anthropic", "Snowflake", "Jira", "Linear"],
@@ -51,10 +59,17 @@ export const experience: Role[] = [
     scene: "exchange",
     logo: "nexus.svg",
     url: "https://nexus.xyz",
+    image: "nexus.webp",
+    about: "A San Francisco lab with its own Layer 1 network. I was part of the team that built a centralized exchange on it.",
     points: [
       "Owned the oracle and risk services of a centralized exchange on a Layer 1 network: mark price, liquidations and pre-trade risk checks.",
       "Built the services between off-chain logic and on-chain execution, handling transaction flows, gas and execution reliability.",
       "Integrated smart contracts over JSON-RPC and Ethers.js and designed REST APIs used across the platform.",
+    ],
+    more: [
+      "Built backend infrastructure and on-chain integrations for the production network in Node.js, Rust and Go.",
+      "Contributed to architecture decisions on scalability and fault tolerance, where failures carry direct financial impact.",
+      "Containerized the services with Docker and deployed them on Kubernetes in Google Cloud.",
     ],
     impact: "Ran the services that set mark price and trigger liquidations, where a wrong value moves real money. Took part in the scalability and fault tolerance decisions behind them.",
     tech: ["Node.js", "Rust", "Go", "Ethers.js", "Docker", "Kubernetes", "Google Cloud"],
@@ -67,10 +82,18 @@ export const experience: Role[] = [
     logo: "windriver.svg",
     url: "https://www.windriver.com",
     viaAvenga: true,
+    image: "windriver.webp",
+    about: "Embedded and edge software for systems that can't fail, such as aircraft, vehicles and telecom networks. I worked on the backend platform services.",
     points: [
       "Built APIs, microservices and gRPC services in Go, Node.js and TypeScript for enterprise systems.",
       "Produced and consumed Kafka events with idempotent consumers and retry handling.",
       "Tuned SQL for consistency under load and automated backend regression testing with Pytest.",
+    ],
+    more: [
+      "Wrote CLI utilities and backend modules in Go for critical system automation.",
+      "Configured the Jenkins pipelines that check every pull request before merge.",
+      "Shipped services as Docker containers on Kubernetes, working with the platform team on Terraform.",
+      "Worked with the frontend teams on Angular data visualization modules.",
     ],
     impact: "Releases shipped with automated regression coverage and Jenkins checks on every pull request, and consumers could retry events safely.",
     tech: ["Go", "Node.js", "TypeScript", "gRPC", "Kafka", "PostgreSQL", "Python", "Kubernetes", "Terraform", "Jenkins", "Angular"],
@@ -83,10 +106,15 @@ export const experience: Role[] = [
     logo: "accenture.svg",
     url: "https://www.accenture.com",
     viaAvenga: true,
+    image: "accenture.webp",
+    about: "A global consulting and technology company. I built enterprise web applications for its client engagements.",
     points: [
       "Delivered enterprise web applications in Vue.js and JavaScript, from mockups to production.",
       "Built reusable components and tuned frontend performance for large applications.",
       "Shipped backend features in C# and .NET behind complex business rules.",
+    ],
+    more: [
+      "Integrated REST APIs with the business logic behind those features.",
     ],
     impact: "Took enterprise screens from mockup to production and covered the backend side in .NET when a feature needed it.",
     tech: ["Vue.js", "JavaScript", ".NET"],
@@ -99,10 +127,15 @@ export const experience: Role[] = [
     logo: "idocket.svg",
     url: "https://www.idocket.com",
     viaAvenga: true,
+    image: "idocket.webp",
+    about: "Judicial records and e-filing software that local governments in Texas run in production.",
     points: [
       "Led four engineers on a judicial records platform used by local governments in Texas.",
       "Turned regulatory, compliance and accessibility requirements into architecture before implementation.",
       "Shipped e-Filing, e-Recording and public records features with React, Redux and TypeScript.",
+    ],
+    more: [
+      "Set the code review, clean architecture and agile delivery standards the team worked by.",
     ],
     impact: "A team of four shipped a compliance-bound platform that local governments in Texas use in production, with code review and agile delivery as the standard.",
     tech: ["React", "Redux", "TypeScript", "JavaScript"],
@@ -113,10 +146,12 @@ export const experience: Role[] = [
     when: "Jul 2021 – Feb 2022",
     scene: "deploy",
     viaAvenga: true,
+    about: "Operations tooling for telecom teams: deployment automation and internal web applications.",
     points: [
       "Built deployment automation that let telecom teams ship without going through another team.",
       "Implemented React frontend and TypeScript and PostgreSQL backend features.",
     ],
+    more: [],
     impact: "Telecom teams could deploy on their own, which shortened their time to market.",
     tech: ["React", "TypeScript", "Node.js", "PostgreSQL"],
   },
@@ -161,19 +196,10 @@ export const projects: Project[] = [
   },
 ];
 
-export const stack: [string, string[]][] = [
-  ["Languages", ["JavaScript", "TypeScript", "Go", "Python", "Rust", "Solidity", "SQL"]],
-  ["Backend", ["Node.js", "Express", "FastAPI", ".NET", "gRPC", "Kafka"]],
-  ["Data", ["PostgreSQL", "MySQL", "Redis", "MongoDB", "Snowflake"]],
-  ["Cloud and DevOps", ["AWS", "Google Cloud", "Docker", "Kubernetes", "Terraform", "Jenkins", "Nginx", "Linux"]],
-  ["Frontend", ["React", "Next.js", "Redux", "Vue.js", "Angular", "Tailwind CSS"]],
-  ["AI and Web3", ["Claude", "Anthropic", "Ethereum", "Ethers.js", "Hardhat", "Chainlink"]],
-];
-
 export const orbits = [
-  ["JavaScript", "TypeScript", "Go", "Python", "Rust", "Solidity"],
-  ["Node.js", "Express", "FastAPI", "gRPC", "Kafka", "PostgreSQL", "Redis", "MongoDB"],
-  ["Docker", "Kubernetes", "AWS", "Google Cloud", "Terraform", "React", "Next.js", "Vue.js", "Angular", "Claude", "Ethereum", "Chainlink"],
+  ["Go", "TypeScript", "JavaScript", "Python", "Rust", "Solidity", "SQL"],
+  ["Node.js", "Express", "FastAPI", ".NET", "gRPC", "Kafka", "PostgreSQL", "MySQL", "Redis", "MongoDB", "Snowflake"],
+  ["Docker", "Kubernetes", "AWS", "Google Cloud", "Terraform", "Jenkins", "Nginx", "Linux", "React", "Next.js", "Redux", "Vue.js", "Angular", "Tailwind CSS", "Claude", "Anthropic", "Ethereum", "Ethers.js", "Hardhat", "Chainlink"],
 ];
 
 export const techNotes: Record<string, string> = {

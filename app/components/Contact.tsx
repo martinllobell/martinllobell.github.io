@@ -18,14 +18,17 @@ export default function Contact() {
   const booking = profile.calendarUrl || mailto;
   return (
     <section id="contact" className={`panel ${s.contact}`} data-live>
+      <span className="ghost" aria-hidden="true">
+        Hola
+      </span>
       <h2 className={`title reveal ${s.heading}`}>Let&apos;s talk</h2>
       <p className="muted reveal" style={{ "--i": 1 } as React.CSSProperties}>
         Open to remote roles in backend, platform and AI engineering.
       </p>
-      <div className={`reveal ${s.cardWrap}`} style={{ "--i": 2 } as React.CSSProperties}>
+      <div data-parallax="14" className={`reveal ${s.cardWrap}`} style={{ "--i": 2 } as React.CSSProperties}>
         <BusinessCard className={s.card}>
           <div className={s.cardTop}>
-            <span>30 minutes</span>
+            <span>15 minutes</span>
             <span>Video call</span>
           </div>
           <div className={s.cardCenter}>
@@ -41,8 +44,7 @@ export default function Contact() {
           </div>
         </BusinessCard>
       </div>
-      {profile.calendarUrl && <iframe className={`reveal ${s.frame}`} src={profile.calendarUrl} title="Pick a time for a call" loading="lazy" />}
-      <p className={`reveal ${s.actions}`} style={{ "--i": 3 } as React.CSSProperties}>
+      <p data-parallax="22" className={`reveal ${s.actions}`} style={{ "--i": 3 } as React.CSSProperties}>
         <a className="btn" href={booking} {...(profile.calendarUrl && { target: "_blank", rel: "noreferrer" })}>
           {profile.calendarUrl ? "Pick a time" : "Request a call"}
         </a>

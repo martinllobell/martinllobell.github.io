@@ -9,6 +9,8 @@
   --rule: rgba(30, 29, 26, 0.13);
   --accent: #23395e;
   --accent-rgb: 35, 57, 94;
+  --bone: #c4aa82;
+  --ember: #8a6236;
   --logo-filter: brightness(0);
   --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .45 0 0 0 0 .4 0 0 0 .18 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --gutter: clamp(1.25rem, 5vw, 4.5rem);
@@ -26,6 +28,8 @@
   --rule: rgba(236, 231, 222, 0.1);
   --accent: #d2b26f;
   --accent-rgb: 210, 178, 111;
+  --bone: #ffffff;
+  --ember: #f6f1e7;
   --logo-filter: brightness(0) invert(1);
   color-scheme: dark;
 }
@@ -141,12 +145,36 @@ img {
 
 .panel {
   position: relative;
+  overflow-x: clip;
   min-height: 100svh;
   scroll-snap-align: start;
   display: grid;
   align-content: center;
   gap: clamp(1rem, 3.5vh, 2.75rem);
   padding: calc(var(--nav-h) + 2vh) var(--gutter) 4vh;
+}
+
+main {
+  isolation: isolate;
+}
+
+[data-parallax] {
+  translate: 0 var(--py, 0px);
+}
+
+.ghost {
+  position: absolute;
+  z-index: -1;
+  inset: auto 0 2vh;
+  overflow: visible;
+  font: 600 min(30vw, 48vh) / 1 var(--font-display), serif;
+  letter-spacing: -0.03em;
+  text-align: center;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(var(--ink-rgb), 0.09);
+  pointer-events: none;
+  user-select: none;
 }
 
 .title {

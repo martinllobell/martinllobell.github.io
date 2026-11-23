@@ -1,20 +1,27 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { experience } from "../content";
 import BusinessCard from "./BusinessCard";
 import Scene from "./Scene";
 import TechIcon from "./TechIcon";
+import { revealText } from "./Motion";
+import RoleDialog from "./RoleDialog";
 import s from "./Experience.module.css";
 
 const last = experience.length - 1;
+const still = () => !!document.documentElement.dataset.motion || matchMedia("(prefers-reduced-motion: reduce)").matches;
 const pad = (n: number) => String(n).padStart(2, "0");
 
 export default function Experience() {
   const section = useRef<HTMLElement>(null);
   const track = useRef<HTMLOListElement>(null);
   const [active, setActive] = useState(0);
-  const [flipped, setFlipped] = useState<number | null>(null);
+  const [shown, setShown] = useState(0);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const undoReveal = useRef<() => void>(undefined);
+  const lifted = useRef<HTMLElement>(null);
 
   const left = (i: number) => {
     const t = track.current!;
@@ -22,6 +29,44 @@ export default function Experience() {
     return el.offsetLeft - (t.clientWidth - el.offsetWidth) / 2;
   };
   const go = (i: number) => track.current?.scrollTo({ left: left(i), behavior: "smooth" });
+
+  const morph = (swap: () => void) => {
+    if (!document.startViewTransition || still()) {
+      swap();
+      return Promise.resolve();
+    }
+    const run = document.startViewTransition(swap);
+    run.ready.catch(() => {});
+    return run.finished;
+  };
+
+  const open = (i: number, card: HTMLElement) => {
+    if (dialog.current?.open || lifted.current?.style.viewTransitionName) return;
+    lifted.current = card;
+    card.style.viewTransitionName = "role-card";
+    morph(() => {
+      card.style.viewTransitionName = "";
+      undoReveal.current?.();
+      flushSync(() => setShown(i));
+      const d = dialog.current!;
+      d.showModal();
+      d.scrollTop = 0;
+      if (still()) d.querySelectorAll("svg").forEach((svg) => svg.pauseAnimations());
+      else undoReveal.current = revealText(d);
+    });
+  };
+
+  const close = () => {
+    const card = lifted.current;
+    if (!card || !dialog.current?.open) return;
+    morph(() => {
+      dialog.current!.close();
+      card.querySelector("button")!.focus({ preventScroll: true });
+      card.style.viewTransitionName = "role-card";
+    }).finally(() => {
+      card.style.viewTransitionName = "";
+    });
+  };
 
   useEffect(() => {
     const sec = section.current;
@@ -41,12 +86,17 @@ export default function Experience() {
       const k = progress();
       sec.style.setProperty("--p", String(k));
       setActive(Math.round(k * last));
+      for (const el of t.children as HTMLCollectionOf<HTMLElement>) {
+        const away = (el.offsetLeft + el.offsetWidth / 2 - t.scrollLeft) / t.clientWidth - 0.5;
+        el.style.setProperty("--d", String(Math.max(-1, Math.min(1, away))));
+      }
     };
     const schedule = () => {
       frame ||= requestAnimationFrame(update);
     };
 
     const step = (e: WheelEvent) => {
+      if (dialog.current?.open) return;
       if (Math.abs(sec.getBoundingClientRect().top) > 2 || Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
       e.preventDefault();
       clearTimeout(quiet);
@@ -64,6 +114,7 @@ export default function Experience() {
       if (out) scrollTo({ top: out.getBoundingClientRect().top + scrollY, behavior: "smooth" });
     };
 
+    for (const r of experience) if (r.image) new Image().src = `/work/${r.image}`;
     update();
     t.addEventListener("scroll", schedule, { passive: true });
     addEventListener("resize", schedule);
@@ -79,6 +130,9 @@ export default function Experience() {
 
   return (
     <section id="experience" ref={section} className={`panel ${s.experience}`} data-live>
+      <span className="ghost" aria-hidden="true">
+        Career
+      </span>
       <header className={s.head}>
         <h2 className="title">Experience</h2>
         <p className={s.counter} aria-hidden="true">
@@ -89,46 +143,29 @@ export default function Experience() {
         <ol ref={track} className={s.track}>
           {experience.map((r, i) => (
             <li key={r.when} className={s.slide} aria-current={i === active || undefined}>
-              <div className={s.flip} data-flipped={flipped === i || undefined} onClick={() => setFlipped(flipped === i ? null : i)}>
-                <div className={s.face} aria-hidden={flipped === i || undefined}>
-                  <BusinessCard className={s.card}>
-                    <span className={s.cardTop}>
-                      {r.logo ? <img src={`/clients/${r.logo}`} alt="" className={`logo ${s.logo}`} /> : <span className={s.wordmark}>{r.company}</span>}
-                      <span>{r.when}</span>
-                    </span>
-                    <span className={s.cardCenter}>
-                      <span className={s.title}>{r.title}</span>
-                      <span className={s.company}>{r.company}</span>
-                    </span>
-                    <span className={s.cardBottom}>
-                      {r.viaAvenga ? (
-                        <span className={s.via}>
-                          via <img src="/clients/avenga.svg" alt="Avenga" className="logo" />
-                        </span>
-                      ) : (
-                        <span>Remote</span>
-                      )}
-                      <button type="button" className={s.turn} tabIndex={flipped === i ? -1 : 0} aria-label={`Show the impact at ${r.company}`}>
-                        Impact ↻
-                      </button>
-                    </span>
-                  </BusinessCard>
-                </div>
-                <div className={`${s.face} ${s.back}`} aria-hidden={flipped !== i || undefined}>
-                  <BusinessCard className={s.card}>
-                    <span className={s.cardTop}>
-                      <span>Impact</span>
-                      <span>{r.company}</span>
-                    </span>
-                    <span className={s.impact}>{r.impact}</span>
-                    <span className={s.cardBottom}>
-                      <span>{r.when}</span>
-                      <button type="button" className={s.turn} tabIndex={flipped === i ? 0 : -1} aria-label="Back to the card">
-                        ↻
-                      </button>
-                    </span>
-                  </BusinessCard>
-                </div>
+              <div className={s.lift} onClick={(e) => open(i, e.currentTarget)}>
+                <BusinessCard className={s.card}>
+                  <span className={s.cardTop}>
+                    {r.logo ? <img src={`/clients/${r.logo}`} alt="" className={`logo ${s.logo}`} /> : <span className={s.wordmark}>{r.company}</span>}
+                    <span>{r.when}</span>
+                  </span>
+                  <span className={s.cardCenter}>
+                    <span className={s.title}>{r.title}</span>
+                    <span className={s.company}>{r.company}</span>
+                  </span>
+                  <span className={s.cardBottom}>
+                    {r.viaAvenga ? (
+                      <span className={s.via}>
+                        via <img src="/clients/avenga.svg" alt="Avenga" className="logo" />
+                      </span>
+                    ) : (
+                      <span>Remote</span>
+                    )}
+                    <button type="button" className={s.turn} aria-haspopup="dialog" aria-label={`Read more about ${r.company}`}>
+                      Read more
+                    </button>
+                  </span>
+                </BusinessCard>
               </div>
               <div className={s.details}>
                 <Scene kind={r.scene} className={s.scene} />
@@ -153,6 +190,7 @@ export default function Experience() {
           ))}
         </ol>
       </div>
+      <RoleDialog ref={dialog} role={experience[shown]} onClose={close} />
       <div className={s.progress}>
         <span className={s.fill} />
         {experience.map((r, i) => (

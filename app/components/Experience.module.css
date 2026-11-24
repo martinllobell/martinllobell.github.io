@@ -4,9 +4,9 @@
   overflow: hidden;
   grid-template-rows: auto minmax(0, 1fr) auto;
   align-content: stretch;
-  gap: clamp(0.75rem, 2.5vh, 2rem);
-  padding-top: calc(var(--nav-h) + 0.5vh);
-  padding-bottom: 3vh;
+  gap: clamp(0.75rem, 2.5svh, 2rem);
+  padding-top: calc(var(--nav-h) + 0.5svh);
+  padding-bottom: 3svh;
 }
 
 .head {
@@ -24,26 +24,13 @@
   z-index: -1;
   left: 0;
   top: 0;
-  width: min(22vh, 18vw);
+  width: min(22svh, 18vw);
   aspect-ratio: 1;
   pointer-events: none;
 }
 
 .head h2 {
-  font-size: clamp(1.6rem, 1rem + 1.8vh, 2.4rem);
-}
-
-.counter {
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-}
-
-.counter span {
-  display: inline-block;
-  color: var(--ink);
-  animation: tickin 0.45s ease;
+  font-size: clamp(1.6rem, 1rem + 1.8svh, 2.4rem);
 }
 
 .rail {
@@ -283,40 +270,6 @@
   color: var(--accent);
 }
 
-.steps {
-  position: absolute;
-  z-index: 2;
-  top: calc(var(--nav-h) + 0.5vh);
-  right: max(var(--gutter), 50% - 36rem);
-  display: flex;
-  gap: 0.5rem;
-}
-
-.steps button {
-  width: 2.5rem;
-  height: 2.5rem;
-  border: 1px solid var(--rule);
-  border-radius: 50%;
-  background: var(--surface);
-  color: var(--ink);
-  font: inherit;
-  cursor: pointer;
-  transition: border-color 0.2s, scale 0.15s, opacity 0.2s;
-}
-
-.steps button:hover {
-  border-color: var(--accent);
-}
-
-.steps button:active {
-  scale: 0.94;
-}
-
-.steps button:disabled {
-  opacity: 0.35;
-  cursor: default;
-}
-
 .progress {
   position: relative;
   justify-self: center;
@@ -380,13 +333,6 @@
   translate: -100% 0;
 }
 
-@keyframes tickin {
-  from {
-    opacity: 0;
-    transform: translateY(60%);
-  }
-}
-
 @media (max-width: 860px) {
   .track {
     --slide: calc(100cqw - 2 * var(--gutter));
@@ -414,6 +360,15 @@
   .role,
   .stopLabel {
     display: none;
+  }
+
+  .stop[aria-current] .stopLabel {
+    display: block;
+    color: var(--ink);
+  }
+
+  .slide {
+    align-self: start;
   }
 
   .points {
@@ -495,11 +450,5 @@
 
   .track {
     height: auto;
-  }
-}
-
-@media (hover: none) and (max-width: 860px) {
-  .steps {
-    display: none;
   }
 }

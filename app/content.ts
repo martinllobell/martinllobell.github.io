@@ -35,7 +35,7 @@ export type Role = {
   impact: string;
   tech: string[];
   logo?: string;
-  image?: string;
+  image: string;
   url?: string;
   viaAvenga?: boolean;
 };
@@ -46,6 +46,7 @@ export const experience: Role[] = [
     company: "EOS",
     when: "Sep 2026 – Oct 2026",
     scene: "gateway",
+    image: "eos.webp",
     about: "An AI agent platform for companies, built by the team behind Nexus. A company connects the tools it already has and its agents start working on them with little setup.",
     points: [
       "Built an enterprise AI agent platform that lets companies run agents on top of the tools they already use.",
@@ -57,7 +58,7 @@ export const experience: Role[] = [
       "Used the Jira, Linear, GitHub and Slack connectors with Claude every day to build the platform itself.",
     ],
     impact: "Agents worked inside the tools each team already used, and every request was tracked for usage and cost per agent.",
-    tech: ["Claude", "Anthropic", "Snowflake", "Jira", "Linear"],
+    tech: ["Claude", "Anthropic", "Snowflake", "Jira", "Linear", "GitHub", "Slack"],
   },
   {
     title: "Blockchain Engineer",
@@ -116,15 +117,16 @@ export const experience: Role[] = [
     image: "accenture.webp",
     about: "A global consulting and technology company. I built enterprise web applications for its client engagements.",
     points: [
-      "Delivered enterprise web applications in Vue.js and JavaScript, from mockups to production.",
+      "Delivered enterprise web applications in Vue 2, Vue 3 and TypeScript, from mockups to production.",
       "Built reusable components and tuned frontend performance for large applications.",
       "Shipped backend features in C# and .NET behind complex business rules.",
     ],
     more: [
       "Integrated REST APIs with the business logic behind those features.",
+      "Handled deployments on Azure.",
     ],
     impact: "Took enterprise screens from mockup to production and covered the backend side in .NET when a feature needed it.",
-    tech: ["Vue.js", "JavaScript", ".NET"],
+    tech: ["Vue 3", "Vue 2", "TypeScript", "JavaScript", ".NET", "C#", "Azure"],
   },
   {
     title: "Frontend Team Lead",
@@ -153,14 +155,15 @@ export const experience: Role[] = [
     when: "Jul 2021 – Feb 2022",
     scene: "deploy",
     viaAvenga: true,
+    image: "cloudvalley.webp",
     about: "Operations tooling for telecom teams: deployment automation and internal web applications.",
     points: [
       "Built deployment automation that let telecom teams ship without going through another team.",
-      "Implemented React frontend and TypeScript and PostgreSQL backend features.",
+      "Implemented features end to end, with React on the frontend and TypeScript and MongoDB on the backend.",
     ],
     more: [],
     impact: "Telecom teams could deploy on their own, which shortened their time to market.",
-    tech: ["React", "TypeScript", "Node.js", "PostgreSQL"],
+    tech: ["React", "TypeScript", "Node.js", "MongoDB"],
   },
 ];
 
@@ -205,8 +208,8 @@ export const projects: Project[] = [
 
 export const orbits = [
   ["Go", "TypeScript", "JavaScript", "Python", "Rust", "Solidity", "SQL"],
-  ["Node.js", "Express", "FastAPI", ".NET", "gRPC", "Kafka", "PostgreSQL", "MySQL", "Redis", "MongoDB", "Snowflake"],
-  ["Docker", "Kubernetes", "AWS", "Google Cloud", "Terraform", "Jenkins", "Nginx", "Linux", "React", "Next.js", "Redux", "Vue.js", "Angular", "Tailwind CSS", "Claude", "Anthropic", "Ethereum", "Ethers.js", "Hardhat", "Chainlink"],
+  ["Node.js", "Express", "FastAPI", ".NET", "C#", "gRPC", "Kafka", "PostgreSQL", "MySQL", "Redis", "MongoDB", "Snowflake"],
+  ["Docker", "Kubernetes", "AWS", "Azure", "Google Cloud", "Terraform", "Jenkins", "Nginx", "Linux", "React", "Next.js", "Redux", "Vue.js", "Angular", "Tailwind CSS", "Claude", "Anthropic", "Ethereum", "Ethers.js", "Hardhat", "Chainlink"],
 ];
 
 export const techNotes: Record<string, string> = {
@@ -248,7 +251,9 @@ export const techNotes: Record<string, string> = {
   Chainlink: "Oracle network. Functions, Automation and Data Feeds in P2P Betting.",
   React: "UI library behind most of the frontends I have shipped.",
   "Next.js": "React framework. This site and the Tramo landing run on it.",
-  "Vue.js": "Frontend framework I used at Accenture.",
+  "Vue.js": "Vue 2 and Vue 3, used at Accenture.",
+  Azure: "Deployments at Accenture.",
+  "C#": "Backend features behind complex business rules at Accenture.",
   Angular: "Frontend framework for data visualization at Wind River.",
 };
 

@@ -116,7 +116,7 @@
 .match {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: draw 2.8s ease-in-out infinite;
+  animation: draw 9s ease-in-out infinite;
 }
 
 .skel {
@@ -158,10 +158,6 @@
   animation: stage 3.2s ease infinite;
 }
 
-.chip {
-  animation: chip 3s ease-in-out infinite;
-}
-
 .label {
   fill: rgba(var(--ink-rgb), 0.6);
   font: 500 10px var(--font-body);
@@ -171,14 +167,18 @@
   fill: rgba(var(--accent-rgb), 0.08);
 }
 
+.fill {
+  animation: fill 9s ease-in-out infinite;
+}
+
 .draw {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: draw 4s ease-in-out infinite;
+  animation: draw 9s ease-in-out infinite;
 }
 
 .block {
-  animation: block 2.4s ease infinite;
+  animation: block 3.6s ease infinite;
 }
 
 @keyframes dashflow {
@@ -222,9 +222,30 @@
 }
 
 @keyframes draw {
-  60%,
+  18%,
+  94% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  99%,
   to {
     stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes fill {
+  0%,
+  12% {
+    opacity: 0;
+  }
+  26%,
+  94% {
+    opacity: 1;
+  }
+  99%,
+  to {
+    opacity: 0;
   }
 }
 
@@ -287,12 +308,6 @@
   }
   30% {
     fill: rgba(var(--ink-rgb), 0.03);
-  }
-}
-
-@keyframes chip {
-  50% {
-    transform: translateY(4px);
   }
 }
 

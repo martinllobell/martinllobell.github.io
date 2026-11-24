@@ -4,6 +4,7 @@ import s from "./BusinessCard.module.css";
 
 export const tilt = {
   onPointerMove(e: React.PointerEvent<HTMLElement>) {
+    if (e.pointerType !== "mouse") return;
     const el = e.currentTarget;
     const r = el.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width;

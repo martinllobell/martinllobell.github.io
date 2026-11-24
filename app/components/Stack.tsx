@@ -22,8 +22,8 @@ const brand = (name: string) => {
 const fit = (width: number, height: number) => {
   const scale = Math.min(width / 400, height / 520, 1.4);
   const [w, h] = [width / scale, height / scale];
-  const rings = [0.42, 0.71, 1].map((k) => [k * (w / 2 - 34), k * (h / 2 - 40)]);
-  return { viewBox: `${-w / 2} ${-h / 2 - 6} ${w} ${h}`, rings, core: Math.min(1, Math.min(...rings[0]) / 100) };
+  const rings = [0.43, 0.71, 1].map((k) => [k * (w / 2 - 34), k * (h / 2 - 40)]);
+  return { viewBox: `${-w / 2} ${-h / 2 - 6} ${w} ${h}`, rings };
 };
 
 const moving = () => !document.documentElement.dataset.motion && !matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -96,8 +96,15 @@ export default function Stack() {
       if (width && height) setLayout(fit(width, height));
     });
     resize.observe(orbit.current!);
+    const away = (e: Event) => {
+      if (!(e.target instanceof Element && e.target.closest(`.${s.item}`))) leaveOrbit();
+    };
+    addEventListener("pointerdown", away, { passive: true });
+    addEventListener("scroll", away, { passive: true });
     return () => {
       resize.disconnect();
+      removeEventListener("pointerdown", away);
+      removeEventListener("scroll", away);
       clearTimeout(timer.current);
       release.current?.();
     };
@@ -107,12 +114,9 @@ export default function Stack() {
     <section id="stack" className={`panel ${s.stack}`} data-live>
       <h2 className="title reveal">Stack</h2>
       <div className={s.tree} data-parallax="10">
-        <Sculpture shape="gem" className={s.gem} />
+        <Sculpture shape="planet" className={s.nucleus} />
         <svg ref={orbit} className={s.orbit} viewBox={layout.viewBox} role="group" aria-label="Technologies I work with" onPointerMove={drift} onPointerLeave={settle}>
           {link && <line x1="0" y1="0" x2={link.x} y2={link.y} className={s.link} />}
-          <g transform={`scale(${layout.core})`}>
-            <circle r="40" className={s.halo} />
-          </g>
           {orbits.map((ring, k) => {
             const [rx, ry] = layout.rings[k];
             const dur = 60 + k * 30;
@@ -125,17 +129,21 @@ export default function Stack() {
                   <g
                     key={name}
                     className={s.item}
+                  data-on={tip?.name === name || undefined}
                     style={brand(name)}
                     tabIndex={0}
                     role="img"
                     aria-label={`${name}: ${techNotes[name]}`}
-                    onPointerEnter={(e) => enterOrbit(name, e.currentTarget)}
-                    onPointerLeave={(e) => {
-                      if (e.pointerType === "touch") timer.current = window.setTimeout(leaveOrbit, 2200);
-                      else leaveOrbit();
-                    }}
-                    onFocus={(e) => enterOrbit(name, e.currentTarget)}
-                    onBlur={leaveOrbit}
+                    onPointerEnter={(e) => e.pointerType === "mouse" && enterOrbit(name, e.currentTarget)}
+                  onPointerLeave={(e) => e.pointerType === "mouse" && leaveOrbit()}
+                  onClick={(e) => {
+                    if (!matchMedia("(hover: none)").matches) return;
+                    if (tip?.name === name) return leaveOrbit();
+                    enterOrbit(name, e.currentTarget);
+                    timer.current = window.setTimeout(leaveOrbit, 3500);
+                  }}
+                  onFocus={(e) => e.currentTarget.matches(":focus-visible") && enterOrbit(name, e.currentTarget)}
+                  onBlur={leaveOrbit}
                     onKeyDown={(e) => e.key === "Escape" && leaveOrbit()}
                   >
                     <animateMotion dur={`${dur}s`} begin={`-${((i / ring.length) * dur).toFixed(2)}s`} repeatCount="indefinite" path={path} />
@@ -148,7 +156,7 @@ export default function Stack() {
                           <path d={icons[name].path} transform="translate(-10 -10) scale(0.8333)" className={s.icon} />
                         ) : (
                           <text y="4" textAnchor="middle" className={s.mono}>
-                            {name.length > 4 ? name[0] : name}
+                            {name.length > 4 ? name.slice(0, 2) : name}
                           </text>
                         )}
                         <text y="31" textAnchor="middle" className={s.label}>

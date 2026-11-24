@@ -27,6 +27,7 @@ export default function RoutingField({ className }: { className: string }) {
     if (!canvas || !ctx) return;
 
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarse = matchMedia("(pointer: coarse)").matches;
     const mouse = { x: -1e4, y: -1e4 };
     const pull = { x: 0, y: 0, k: 0 };
     const color = { ink: "", accent: "" };
@@ -42,6 +43,7 @@ export default function RoutingField({ className }: { className: string }) {
     let raf = 0;
     let visible = true;
     let spawnAcc = 0;
+    const gap = coarse ? 0.3 : 0.16;
     let last = performance.now();
     const born = last;
 
@@ -62,18 +64,18 @@ export default function RoutingField({ className }: { className: string }) {
 
     const layout = () => {
       const rect = canvas.getBoundingClientRect();
-      const dpr = Math.min(devicePixelRatio || 1, 2);
+      const dpr = Math.min(devicePixelRatio || 1, coarse ? 1.5 : 2);
       w = rect.width;
       h = rect.height;
       canvas.width = w * dpr;
       canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const span = w < 760 ? 0.24 : 0.22;
+      const span = 0.22;
       gate = { x: w * 0.5, y: h * (0.1 + span / 2) };
       sources = Array.from({ length: 7 }, (_, i) => ({ x: w * (0.05 + 0.025 * Math.sin(i * 2.3)), y: h * (0.1 + (i * span) / 6) }));
       providers = Array.from({ length: 5 }, (_, i) => ({ x: w * 0.95, y: h * (0.12 + (i * (span - 0.04)) / 4) }));
       flashes = providers.map(() => 0);
-      dust = Array.from({ length: Math.min(140, Math.round((w * h) / 10000)) }, () => ({
+      dust = Array.from({ length: Math.min(coarse ? 24 : 140, Math.round((w * h) / 10000)) }, () => ({
         x: Math.random() * w,
         y: Math.random() * h,
         vx: (Math.random() - 0.5) * 0.15,
@@ -189,7 +191,7 @@ export default function RoutingField({ className }: { className: string }) {
       drawGraph(intro, ease, dt);
       if (intro >= 1 && !still) {
         spawnAcc += dt;
-        for (; spawnAcc > 0.16; spawnAcc -= 0.16) spawn();
+        for (; spawnAcc > gap; spawnAcc -= gap) spawn();
       }
       drawRequests(dt);
       if (!still && visible && document.documentElement.dataset.motion !== "paused") raf = requestAnimationFrame(frame);
@@ -202,12 +204,13 @@ export default function RoutingField({ className }: { className: string }) {
     };
 
     const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
       const r = canvas.getBoundingClientRect();
       mouse.x = e.clientX - r.left;
       mouse.y = e.clientY - r.top;
     };
 
-    const onDown = (e: PointerEvent) => {
+    const onClick = (e: MouseEvent) => {
       if (still || (e.target as HTMLElement).closest("a,button")) return;
       const y = e.clientY - canvas.getBoundingClientRect().top;
       if (y < 0 || y > h) return;
@@ -237,14 +240,14 @@ export default function RoutingField({ className }: { className: string }) {
     seen.observe(canvas);
     theme.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "data-motion"] });
     addEventListener("pointermove", onMove, { passive: true });
-    addEventListener("pointerdown", onDown);
+    addEventListener("click", onClick);
     return () => {
       cancelAnimationFrame(raf);
       resize.disconnect();
       seen.disconnect();
       theme.disconnect();
       removeEventListener("pointermove", onMove);
-      removeEventListener("pointerdown", onDown);
+      removeEventListener("click", onClick);
     };
   }, []);
 

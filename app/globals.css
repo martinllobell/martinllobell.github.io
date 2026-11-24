@@ -51,7 +51,7 @@ body {
   margin: 0;
   background: var(--paper-grain), repeating-linear-gradient(90deg, rgba(var(--ink-rgb), 0.032) 0 1px, transparent 1px 2.25rem), var(--paper);
   color: var(--ink);
-  font: 400 clamp(0.95rem, 0.6rem + 0.9vh, 1.0625rem) / 1.6 var(--font-body), system-ui, sans-serif;
+  font: 400 clamp(0.95rem, 0.6rem + 0.9svh, 1.0625rem) / 1.6 var(--font-body), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
   transition: background-color 0.4s, color 0.4s;
@@ -151,8 +151,8 @@ img {
   scroll-snap-align: start;
   display: grid;
   align-content: center;
-  gap: clamp(1rem, 3.5vh, 2.75rem);
-  padding: calc(var(--nav-h) + 2vh) var(--gutter) 4vh;
+  gap: clamp(1rem, 3.5svh, 2.75rem);
+  padding: calc(var(--nav-h) + 2svh) var(--gutter) 4svh;
 }
 
 main {
@@ -167,9 +167,9 @@ main {
   position: absolute;
   z-index: -1;
   top: 50%;
-  width: min(120vh, 110vw);
+  width: min(120svh, 110vw);
   aspect-ratio: 1;
-  margin-top: max(-60vh, -55vw);
+  margin-top: max(-60svh, -55vw);
   fill: none;
   stroke: rgba(var(--accent-rgb), 0.11);
   stroke-width: 0.22;
@@ -182,16 +182,26 @@ main {
   transition: translate 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), rotate 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+@media (pointer: coarse), (max-width: 860px) {
+  .guilloche {
+    will-change: transform;
+  }
+
+  .guilloche g {
+    transition: none;
+  }
+}
+
 .guilloche.left {
-  left: max(-50vh, -55vw);
+  left: max(-50svh, -55vw);
 }
 
 .guilloche.right {
-  right: max(-50vh, -55vw);
+  right: max(-50svh, -55vw);
 }
 
 .title {
-  font-size: clamp(2.2rem, 1rem + 4vh, 3.75rem);
+  font-size: clamp(2.2rem, 1rem + 4svh, 3.75rem);
   line-height: 1.05;
   text-align: center;
 }

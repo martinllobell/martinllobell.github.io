@@ -1,27 +1,22 @@
 .stack {
+  --head: clamp(2.4rem, 1.4rem + 2.2svh, 3.4rem);
   height: 100svh;
   min-height: 0;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: var(--head) minmax(0, 1fr);
   align-content: stretch;
-  gap: clamp(0.5rem, 1.5vh, 1rem);
-  padding-inline: clamp(0.5rem, 3vw, 3.5rem);
-  padding-bottom: 2vh;
+  gap: 0;
+  padding: calc(var(--nav-h) + 0.5svh) clamp(0.5rem, 3vw, 3.5rem) min(var(--nav-h) + var(--head), 12.5svh);
+}
+
+.stack h2 {
+  font-size: clamp(1.6rem, 1rem + 1.8svh, 2.4rem);
 }
 
 .tree {
   position: relative;
-  width: 100%;
+  justify-self: center;
+  width: min(100%, 68rem);
   min-height: 0;
-}
-
-.gem {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: min(17vh, 20vw);
-  aspect-ratio: 1;
-  translate: -50% calc(-50% + var(--py, 0px) * 0.3);
-  pointer-events: none;
 }
 
 .orbit {
@@ -33,6 +28,16 @@
   touch-action: manipulation;
 }
 
+.nucleus {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(21svh, 24vw);
+  aspect-ratio: 1;
+  translate: -50% calc(-50% + var(--py, 0px) * 0.3);
+  pointer-events: none;
+}
+
 .ring {
   translate: calc(var(--mx, 0) * var(--k) * 9px) calc(var(--my, 0) * var(--k) * 7px);
   transition: translate 0.5s ease-out;
@@ -42,29 +47,6 @@
   fill: none;
   stroke: var(--rule);
   stroke-dasharray: 2 6;
-}
-
-.core {
-  fill: var(--surface);
-  stroke: rgba(var(--ink-rgb), 0.3);
-}
-
-.halo {
-  fill: none;
-  stroke: var(--accent);
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: halo 2.6s ease-out infinite;
-}
-
-.mark {
-  fill: none;
-  stroke: rgba(var(--ink-rgb), 0.55);
-  stroke-width: 1.5;
-}
-
-.hub {
-  fill: var(--accent);
 }
 
 .item {
@@ -87,7 +69,7 @@
   transition: scale 0.25s ease-out;
 }
 
-.item:is(:hover, :focus-visible) .body {
+.item:is(:focus-visible, [data-on]) .body {
   scale: 1.25;
 }
 
@@ -108,15 +90,15 @@
   transition: fill 0.25s;
 }
 
-.item:is(:hover, :focus-visible) .icon {
+.item:is(:focus-visible, [data-on]) .icon {
   fill: var(--brand, var(--accent));
 }
 
-.item:is(:hover, :focus-visible) .badge {
+.item:is(:focus-visible, [data-on]) .badge {
   stroke: var(--brand, var(--accent));
 }
 
-:global([data-theme="dark"]) .item:is(:hover, :focus-visible) .icon {
+:global([data-theme="dark"]) .item:is(:focus-visible, [data-on]) .icon {
   fill: var(--brand-dark, var(--accent));
 }
 
@@ -175,17 +157,6 @@
   from {
     opacity: 0;
     transform: translateY(4px);
-  }
-}
-
-@keyframes halo {
-  from {
-    transform: scale(1);
-    opacity: 0.7;
-  }
-  to {
-    transform: scale(1.7);
-    opacity: 0;
   }
 }
 

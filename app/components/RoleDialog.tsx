@@ -26,8 +26,8 @@ export default function RoleDialog({ ref, role: r, onClose }: { ref: React.Ref<H
           </button>
         </header>
         <div className={s.media}>
-          {r.image && <img src={`/work/${r.image}`} alt={`${r.company} website`} width="1200" height="627" decoding="sync" className={s.photo} />}
-          <Scene kind={r.scene} className={r.image ? s.scene : `${s.scene} ${s.tall}`} />
+          <img src={`/work/${r.image}`} alt={`${r.company} cover`} width="1200" height="627" decoding="sync" className={s.photo} />
+          <Scene kind={r.scene} className={s.scene} />
         </div>
         <div className={s.text}>
           <div>

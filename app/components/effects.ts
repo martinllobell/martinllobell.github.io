@@ -3,19 +3,20 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 export const animate = () => {
   const ctx = gsap.context(() => {
-    for (const el of gsap.utils.toArray<HTMLElement>("[data-parallax]")) {
-      const depth = `${el.dataset.parallax}vh`;
-      const section = el.closest("section")!;
-      if (section.id !== "top") {
-        gsap.fromTo(el, { "--py": depth }, { "--py": "0vh", ease: "none", scrollTrigger: { trigger: section, start: "top bottom", end: "top top", scrub: 0.4 } });
+    if (!matchMedia("(pointer: coarse), (max-width: 860px)").matches) {
+      for (const el of gsap.utils.toArray<HTMLElement>("[data-parallax]")) {
+        const depth = `${el.dataset.parallax}vh`;
+        const section = el.closest("section")!;
+        const first = section.id === "top";
+        gsap.fromTo(el, { "--py": first ? "0vh" : depth }, { "--py": `-${depth}`, ease: "none", scrollTrigger: { trigger: section, start: first ? "top top" : "top bottom", end: "bottom top", scrub: 0.4 } });
       }
-      gsap.fromTo(el, { "--py": "0vh" }, { "--py": `-${depth}`, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: "bottom bottom", end: "bottom top", scrub: 0.4 } });
-    }
-    for (const el of gsap.utils.toArray<SVGElement>(".guilloche")) {
-      gsap.fromTo(el, { rotation: -50, yPercent: 25 }, { rotation: 50, yPercent: -25, ease: "none", scrollTrigger: { trigger: el.parentElement, start: "top bottom", end: "bottom top", scrub: 0.6 } });
+      for (const el of gsap.utils.toArray<SVGElement>(".guilloche")) {
+        gsap.fromTo(el, { rotation: -50, yPercent: 25 }, { rotation: 50, yPercent: -25, ease: "none", scrollTrigger: { trigger: el.parentElement, start: "top bottom", end: "bottom top", scrub: 0.6 } });
+      }
     }
     for (const el of gsap.utils.toArray<HTMLElement>("h2.title")) {
       const { chars } = new SplitText(el, { type: "words,chars" });

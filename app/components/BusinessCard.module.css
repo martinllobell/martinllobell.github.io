@@ -1,7 +1,7 @@
 .card {
   position: relative;
   aspect-ratio: 1.75;
-  padding: clamp(0.9rem, 2.2vh, 1.4rem) clamp(1rem, 2.4vw, 1.6rem);
+  padding: clamp(0.9rem, 2.2svh, 1.4rem) clamp(1rem, 2.4vw, 1.6rem);
   display: grid;
   grid-template-rows: auto 1fr auto;
   background: var(--card) var(--paper-grain);
@@ -26,4 +26,10 @@
   background: radial-gradient(circle at var(--gx, 30%) var(--gy, 0%), rgba(255, 255, 255, 0.55), transparent 55%);
   mix-blend-mode: soft-light;
   opacity: 0.7;
+}
+
+@media (pointer: coarse) {
+  .sheen {
+    display: none;
+  }
 }

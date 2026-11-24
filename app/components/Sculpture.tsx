@@ -18,7 +18,7 @@ const shapes = {
   vec2 m=vec2((max(g,o)+h*h*5.)*.5,0.);
   return near(m,length(p)-.36-.06*P+.02*sin(T*2.),3.);`,
   watch: `
-  p=ry(.55*sin(S*.5))*rx(-.35)*p;
+  p=ry(.55*sin(S*.5))*rx(-.35)*p*1.17;
   vec2 m=vec2(tor(rx(1.5708)*p,1.,.075),0.);
   m=near(m,tor(rx(1.5708)*p,.86,.018),2.);
   float s=.5236,a=mod(atan(p.y,p.x)+s*.5,s)-s*.5,l=length(p.xy);
@@ -28,22 +28,22 @@ const shapes = {
   m=near(m,box(h-vec3(0.,.2,.05),vec3(.022,.22,.014))-.012,0.);
   m=near(m,box(n-vec3(0.,.28,.1),vec3(.014,.32,.01))-.01,0.);
   m=near(m,box(p-vec3(0.,1.13,0.),vec3(.06,.07,.06))-.02,2.);
-  return near(m,length(p-vec3(0.,0.,.1))-.06-.02*P,3.);`,
+  m=near(m,length(p-vec3(0.,0.,.1))-.06-.02*P,3.);
+  return vec2(m.x*.85,m.y);`,
   links: `
-  p=rz(1.5708+.12*sin(S*.8))*ry(S*.7)*p*.62;
+  p=rz(1.5708+.12*sin(S*.8))*ry(S*.7)*p*.74;
   vec2 m=vec2(link(p),1.);
   m=near(m,link(ry(1.5708)*(p-vec3(0.,.66,0.))),0.);
   return near(m,link(ry(1.5708)*(p+vec3(0.,.66,0.))),2.);`,
-  gem: `
-  p=rx(.42)*ry(S*.6)*p*.95;
-  float s=.7854,l=length(p.xz),a=mod(atan(p.z,p.x)+s*.5,s)-s*.5,b=mod(atan(p.z,p.x),s)-s*.5;
-  vec2 u=l*vec2(cos(a),sin(a)),v=l*vec2(cos(b),sin(b));
-  float d=max(p.y-.42,u.x-.98);
-  d=max(d,dot(vec2(u.x,p.y),vec2(.573,.819))-.72);
-  d=max(d,dot(vec2(v.x,p.y),vec2(.74,.673))-.82);
-  d=max(d,dot(vec2(u.x,-p.y),vec2(.707,.707))-.7);
-  d=max(d,dot(vec2(v.x,-p.y),vec2(.8,.6))-.78);
-  return vec2(d*.9,4.);`,
+  planet: `
+  p*=1.16;
+  vec3 s=rz(.35)*ry(S*.5)*p,q=rz(-.32+.05*sin(S*.6))*rx(.42)*p;
+  float lat=s.y/.66,r=length(q.xz);
+  vec2 m=vec2((length(s)-.64-.012*smoothstep(.2,.8,sin(lat*21.))*(1.-lat*lat))*.8,0.);
+  m=near(m,length(max(abs(vec2(r-.98,q.y))-vec2(.1,.006),0.))-.012,1.);
+  m=near(m,length(max(abs(vec2(r-1.2,q.y))-vec2(.045,.004),0.))-.01,2.);
+  m=near(m,length(q-vec3(1.2*cos(S*1.1),0.,1.2*sin(S*1.1)))-.075,3.);
+  return vec2(m.x*.86,m.y);`,
   bowtie: `
   p=ry(.5*sin(S*.7))*rx(.12*sin(S*.9))*p;
   float x=abs(p.x),f=smoothstep(.1,1.05,x);
@@ -55,7 +55,9 @@ const shapes = {
 
 type Shape = keyof typeof shapes;
 
-const frag = (shape: Shape) => `#ifdef GL_FRAGMENT_PRECISION_HIGH
+const frag = (shape: Shape, light: boolean) => `#define STEPS ${light ? 56 : 96}
+#define LIMIT ${shape === "links" ? "5." : "1.7"}
+#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
 precision mediump float;
@@ -69,7 +71,7 @@ float box(vec3 p,vec3 b){vec3 q=abs(p)-b;return length(max(q,0.))+min(max(q.x,ma
 float link(vec3 p){return length(vec2(length(vec2(p.x,max(abs(p.y)-.2,0.)))-.27,p.z))-.085;}
 vec2 near(vec2 m,float d,float id){return d<m.x?vec2(d,id):m;}
 vec2 map(vec3 p){
-  p=rx(M.y*.75)*ry(M.x*.95)*p;${shapes[shape]}
+  p=rx(M.y*.5)*ry(M.x*.7)*p;${shapes[shape]}
 }
 vec3 env(vec3 r){
   vec3 sky=mix(mix(C*.3,vec3(.72,.76,.84),r.y*.5+.5),mix(vec3(.05,.055,.07),vec3(.3),r.y*.5+.5),D);
@@ -82,10 +84,12 @@ void main(){
   float k=min(R.x,R.y);
   vec2 uv=(gl_FragCoord.xy*2.-R)/k;
   vec3 ro=vec3(0.,0.,3.4),rd=normalize(vec3(uv,-2.6));
-  float t=0.,md=1e3,mt=0.;vec2 h;
-  for(int i=0;i<96;i++){h=map(ro+rd*t);if(h.x<md){md=h.x;mt=t;}if(h.x<.001||t>6.)break;t+=h.x;}
+  float near2=dot(cross(rd,ro),cross(rd,ro));
+  if(near2>LIMIT){gl_FragColor=vec4(0.);return;}
+  float t=1.2,md=1e3,mt=1.2;vec2 h;
+  for(int i=0;i<STEPS;i++){h=map(ro+rd*t);if(h.x<md){md=h.x;mt=t;}if(h.x<.001||t>6.)break;t+=h.x;}
   float cov=1.-smoothstep(0.,3.*mt/(2.6*k),md);
-  float g=(.18+.5*P)*exp(-pow(length(cross(rd,ro)),2.)*10.);
+  float g=(.18+.5*P)*exp(-near2*10.);
   vec3 col=vec3(0.);
   if(cov>0.){
     vec3 q=ro+rd*mt;vec2 e=vec2(.001,0.);float id=map(q).y;
@@ -97,7 +101,8 @@ void main(){
     col=id>3.5?base*shade*.75+env(r)*.5+env(refract(rd,n,.6))*.35:id>2.5?base+env(r)*.15:base*shade+env(r)*(.1+.45*fr);
     col+=(hash(gl_FragCoord.xy+fract(T))-.5)*.04;
   }
-  gl_FragColor=vec4(col*cov+A*g*(1.-cov),max(cov,g*.9));
+  vec2 edge=smoothstep(vec2(1.),vec2(.93),abs(uv)*k/R);
+  gl_FragColor=vec4(col*cov+A*g*(1.-cov),max(cov,g*.9))*edge.x*edge.y;
 }`;
 
 const rgb = (name: string) => {
@@ -114,6 +119,7 @@ function mount(canvas: HTMLCanvasElement, shape: Shape, tone: string) {
   const host = canvas.closest("section");
   if (!gl || !host) return;
 
+  const coarse = matchMedia("(pointer: coarse)").matches;
   const shader = (type: number, src: string) => {
     const sh = gl.createShader(type)!;
     gl.shaderSource(sh, src);
@@ -122,7 +128,7 @@ function mount(canvas: HTMLCanvasElement, shape: Shape, tone: string) {
   };
   const prog = gl.createProgram()!;
   gl.attachShader(prog, shader(gl.VERTEX_SHADER, vert));
-  gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, frag(shape)));
+  gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, frag(shape, coarse)));
   gl.linkProgram(prog);
   if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
   gl.useProgram(prog);
@@ -141,6 +147,8 @@ function mount(canvas: HTMLCanvasElement, shape: Shape, tone: string) {
   let pulse = 0;
   let last = 0;
   let raf = 0;
+  let quality = 1;
+  let slow = 0;
   let visible = true;
 
   let goal = palette(tone);
@@ -152,7 +160,7 @@ function mount(canvas: HTMLCanvasElement, shape: Shape, tone: string) {
     gl.uniform1f(u.D, mix[6]);
   };
   const size = () => {
-    const dpr = Math.min(devicePixelRatio || 1, 1.75);
+    const dpr = Math.min(devicePixelRatio || 1, coarse ? 1.5 : 1.75) * quality;
     canvas.width = canvas.clientWidth * dpr;
     canvas.height = canvas.clientHeight * dpr;
     gl.viewport(0, 0, canvas.width, canvas.height);
@@ -167,6 +175,16 @@ function mount(canvas: HTMLCanvasElement, shape: Shape, tone: string) {
   };
   const running = () => visible && !still && !document.documentElement.dataset.motion;
   const frame = (now: number) => {
+    if (coarse && now - last < 30) {
+      raf = requestAnimationFrame(frame);
+      return;
+    }
+    slow = now - last > 48 ? slow + 1 : Math.max(0, slow - 1);
+    if (slow > 12 && quality > 0.5) {
+      quality -= 0.15;
+      slow = 0;
+      size();
+    }
     const dt = Math.min((now - last) / 1000, 0.05);
     last = now;
     time += dt;
@@ -186,12 +204,12 @@ function mount(canvas: HTMLCanvasElement, shape: Shape, tone: string) {
   };
 
   const onMove = (e: PointerEvent) => {
-    if (!visible) return;
+    if (!visible || e.pointerType !== "mouse") return;
     const r = canvas.getBoundingClientRect();
     tilt.tx = Math.max(-1, Math.min(1, (e.clientX - r.left - r.width / 2) / (innerWidth * 0.4)));
     tilt.ty = Math.max(-1, Math.min(1, (e.clientY - r.top - r.height / 2) / (innerHeight * 0.4)));
   };
-  const onDown = (e: PointerEvent) => {
+  const onClick = (e: MouseEvent) => {
     if ((e.target as HTMLElement).closest("a,button")) return;
     vel += 5;
     pulse = 1;
@@ -220,7 +238,7 @@ function mount(canvas: HTMLCanvasElement, shape: Shape, tone: string) {
   seen.observe(canvas);
   watch.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "data-motion"] });
   addEventListener("pointermove", onMove, { passive: true });
-  host.addEventListener("pointerdown", onDown);
+  host.addEventListener("click", onClick);
   host.addEventListener("gate", onGate);
   return () => {
     cancelAnimationFrame(raf);
@@ -230,7 +248,7 @@ function mount(canvas: HTMLCanvasElement, shape: Shape, tone: string) {
     seen.disconnect();
     watch.disconnect();
     removeEventListener("pointermove", onMove);
-    host.removeEventListener("pointerdown", onDown);
+    host.removeEventListener("click", onClick);
     host.removeEventListener("gate", onGate);
   };
 }

@@ -176,46 +176,69 @@ function Deploy() {
 }
 
 function Ledger() {
-  const rows = [28, 58, 88, 118];
+  const bank = ["1,200", "860", "2,450", "40"];
+  const books = ["860", "1,200", "2,450", "?"];
   const pairs = [
     [0, 1],
     [1, 0],
-    [2, 3],
+    [2, 2],
   ];
+  const y = (i: number) => 38 + i * 30;
   return (
     <>
-      {rows.map((y) => (
-        <g key={y}>
-          <rect x="14" y={y - 9} width="92" height="18" rx="3" className={s.node} />
-          <line x1="24" y1={y} x2="80" y2={y} className={s.wire} />
-          <rect x="214" y={y - 9} width="92" height="18" rx="3" className={s.node} />
-          <line x1="224" y1={y} x2="290" y2={y} className={s.wire} />
+      <text x="56" y="16" textAnchor="middle" className={s.label}>
+        Bank
+      </text>
+      <text x="264" y="16" textAnchor="middle" className={s.label}>
+        Invoices
+      </text>
+      {bank.map((amount, i) => (
+        <g key={i}>
+          <rect x="8" y={y(i) - 10} width="96" height="20" rx="3" className={s.node} />
+          <text x="56" y={y(i) + 4} textAnchor="middle" className={s.label}>
+            $ {amount}
+          </text>
+          <rect x="216" y={y(i) - 10} width="96" height="20" rx="3" className={books[i] === "?" ? `${s.node} ${s.blink}` : s.node} />
+          <text x="264" y={y(i) + 4} textAnchor="middle" className={s.label}>
+            {books[i] === "?" ? "Review" : `$ ${books[i]}`}
+          </text>
         </g>
       ))}
-      {pairs.map(([a, b], i) => (
-        <path key={i} d={`M106 ${rows[a]} C160 ${rows[a]} 160 ${rows[b]} 214 ${rows[b]}`} pathLength={1} className={s.match} style={delay(i * 0.7)} />
+      <path d={`M104 ${y(3)} L216 ${y(3)}`} className={`${s.wire} ${s.dash}`} />
+      {pairs.map(([from, to], i) => (
+        <path key={i} d={`M104 ${y(from)} C160 ${y(from)} 160 ${y(to)} 216 ${y(to)}`} pathLength={1} className={s.match} style={delay(i * 0.5)} />
       ))}
-      <path d="M106 118 C150 118 160 146 160 146" className={`${s.wire} ${s.dash}`} />
-      <rect x="146" y="140" width="28" height="14" rx="3" className={`${s.node} ${s.blink}`} />
     </>
   );
 }
 
 function Finance() {
-  const area = "M10 130 L50 110 L90 116 L130 86 L170 94 L210 60 L250 70 L310 34";
+  const line = "M14 126 L58 108 L102 116 L146 84 L190 92 L234 58 L278 46";
   return (
     <>
-      {["CSV", "PDF", "OFX"].map((t, i) => (
-        <g key={t} className={s.chip} style={delay(i * 0.5)}>
-          <rect x={10 + i * 48} y="10" width="40" height="20" rx="10" className={s.node} />
-          <text x={30 + i * 48} y="24" className={s.label} textAnchor="middle">
+      {["CSV", "PDF", "Bank API"].map((t, i) => (
+        <g key={t}>
+          <rect x={14 + i * 66} y="8" width="58" height="20" rx="10" className={s.node} />
+          <text x={43 + i * 66} y="22" className={s.label} textAnchor="middle">
             {t}
           </text>
         </g>
       ))}
-      <path d={`${area} L310 150 L10 150 Z`} className={s.area} />
-      <path d={area} pathLength={1} className={`${s.line} ${s.draw}`} />
-      <circle cx="310" cy="34" r="4" className={s.hub} />
+      {[60, 94, 128].map((y) => (
+        <line key={y} x1="14" y1={y} x2="306" y2={y} className={s.grid} />
+      ))}
+      <path d={`${line} L278 140 L14 140 Z`} className={`${s.area} ${s.fill}`} />
+      <path d={line} pathLength={1} className={`${s.line} ${s.draw}`} />
+      <circle cx="278" cy="46" r="4" className={s.hub} />
+      <text x="278" y="36" textAnchor="middle" className={s.label}>
+        Balance
+      </text>
+      <text x="14" y="154" className={s.label}>
+        Jan
+      </text>
+      <text x="278" y="154" textAnchor="middle" className={s.label}>
+        Today
+      </text>
     </>
   );
 }
@@ -223,23 +246,31 @@ function Finance() {
 function Chain() {
   return (
     <>
-      {["Functions", "Automation", "Data Feed"].map((t, i) => {
-        const x = 80 + i * 80;
+      {["Functions", "Automation", "Price feed"].map((t, i) => {
+        const x = 120 + i * 80;
         return (
           <g key={t}>
-            <text x={x} y="18" className={s.label} textAnchor="middle">
+            <text x={x} y="20" className={s.label} textAnchor="middle">
               {t}
             </text>
-            <line x1={x} y1="26" x2={x} y2="84" className={`${s.wire} ${s.dash}`} />
-            <Dot path={`M${x} 26 L${x} 84`} dur={1.8} begin={i * 0.6} r={2.2} muted />
+            <line x1={x} y1="28" x2={x} y2="62" className={`${s.wire} ${s.dash}`} />
+            <Dot path={`M${x} 28 L${x} 62`} dur={2.4} begin={i * 0.8} r={2.2} muted />
           </g>
         );
       })}
-      <line x1="20" y1="112" x2="300" y2="112" className={s.wire} />
-      {[20, 100, 180, 260].map((x, i) => (
-        <rect key={x} x={x} y="92" width="40" height="40" rx="6" className={`${s.node} ${s.block}`} style={delay(i * 0.6)} />
-      ))}
-      <Dot path="M40 112 L280 112" dur={3} r={4} />
+      <line x1="40" y1="84" x2="280" y2="84" className={s.wire} />
+      {["Bet", "Result", "Settle", "Payout"].map((t, i) => {
+        const x = 40 + i * 80;
+        return (
+          <g key={t}>
+            <rect x={x - 22} y="62" width="44" height="44" rx="6" className={`${s.node} ${s.solid} ${s.block}`} style={delay(i * 0.9)} />
+            <text x={x} y="126" className={s.label} textAnchor="middle">
+              {t}
+            </text>
+          </g>
+        );
+      })}
+      <Dot path="M40 84 L280 84" dur={3.6} r={4} />
     </>
   );
 }

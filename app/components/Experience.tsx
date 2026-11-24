@@ -15,7 +15,6 @@ import s from "./Experience.module.css";
 const last = experience.length - 1;
 const reduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 const still = () => !!document.documentElement.dataset.motion || reduced();
-const pad = (n: number) => String(n).padStart(2, "0");
 
 export default function Experience() {
   const section = useRef<HTMLElement>(null);
@@ -43,24 +42,6 @@ export default function Experience() {
     return run.finished;
   };
 
-  const fit = () => {
-    const d = dialog.current!;
-    delete d.dataset.fit;
-    delete d.dataset.tight;
-    const over = () => d.scrollHeight > d.clientHeight + 1;
-    const shrink = () => {
-      for (let k = 1; k > 0.745; k -= 0.02) {
-        d.style.setProperty("--k", String(k));
-        if (!over()) return;
-      }
-      if ("tight" in d.dataset) return;
-      d.dataset.tight = "";
-      shrink();
-    };
-    shrink();
-    if (!over()) d.dataset.fit = "";
-  };
-
   const open = (i: number, card: HTMLElement) => {
     if (dialog.current?.open || lifted.current?.style.viewTransitionName) return;
     lifted.current = card;
@@ -72,7 +53,6 @@ export default function Experience() {
       const d = dialog.current!;
       d.showModal();
       d.scrollTop = 0;
-      fit();
       if (document.documentElement.dataset.motion === "paused" || reduced()) d.querySelectorAll("svg").forEach((svg) => svg.pauseAnimations());
       if (!still()) undoReveal.current = effects.current?.revealText(d);
     });
@@ -144,26 +124,18 @@ export default function Experience() {
       if (out) scrollTo({ top: out.getBoundingClientRect().top + scrollY, behavior: "smooth" });
     };
 
-    if (!document.documentElement.dataset.motion) for (const r of experience) if (r.image) new Image().src = `/work/${r.image}`;
+    if (!document.documentElement.dataset.motion) for (const r of experience) new Image().src = `/work/${r.image}`;
     update();
     t.addEventListener("scroll", schedule, { passive: true });
-    let fitting = 0;
-    const refit = () => {
-      cancelAnimationFrame(fitting);
-      if (dialog.current?.open) fitting = requestAnimationFrame(fit);
-    };
     addEventListener("resize", schedule);
-    addEventListener("resize", refit);
     sec.addEventListener("wheel", step, { passive: false });
     t.addEventListener("pointermove", arm, { passive: true });
     addEventListener("scroll", disarm, { passive: true });
     return () => {
       cancelAnimationFrame(frame);
-      cancelAnimationFrame(fitting);
       clearTimeout(quiet);
       t.removeEventListener("scroll", schedule);
       removeEventListener("resize", schedule);
-      removeEventListener("resize", refit);
       sec.removeEventListener("wheel", step);
       t.removeEventListener("pointermove", arm);
       removeEventListener("scroll", disarm);
@@ -176,9 +148,6 @@ export default function Experience() {
       <header className={s.head}>
         <Sculpture shape="watch" className={s.watch} />
         <h2 className="title">Experience</h2>
-        <p className={s.counter} aria-hidden="true">
-          <span key={active}>{pad(active + 1)}</span> / {pad(experience.length)}
-        </p>
       </header>
       <div className={s.rail}>
         <ol ref={track} className={s.track}>
@@ -232,14 +201,6 @@ export default function Experience() {
         </ol>
       </div>
       <RoleDialog ref={dialog} role={experience[shown]} onClose={close} />
-      <div className={s.steps}>
-        <button type="button" aria-label="Previous role" disabled={active === 0} onClick={() => go(active - 1)}>
-          ←
-        </button>
-        <button type="button" aria-label="Next role" disabled={active === last} onClick={() => go(active + 1)}>
-          →
-        </button>
-      </div>
       <div className={s.progress}>
         <span className={s.fill} />
         {experience.map((r, i) => (

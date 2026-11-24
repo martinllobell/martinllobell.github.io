@@ -12,8 +12,8 @@
 
 .text {
   display: grid;
-  gap: clamp(0.8rem, 2vh, 1.3rem);
-  font-size: clamp(1rem, 0.6rem + 1.1vh, 1.2rem);
+  gap: clamp(0.8rem, 2svh, 1.3rem);
+  font-size: clamp(1rem, 0.6rem + 1.1svh, 1.2rem);
 }
 
 .text p:first-child {
@@ -47,7 +47,7 @@
 }
 
 .window {
-  height: clamp(8rem, 28vh, 15rem);
+  height: clamp(8rem, 28svh, 15rem);
   overflow: hidden;
   mask-image: linear-gradient(transparent, #000 18%, #000 82%, transparent);
 }
@@ -110,7 +110,7 @@
   }
 
   .window {
-    height: clamp(4.5rem, 12vh, 8rem);
+    height: clamp(4.5rem, 12svh, 8rem);
   }
 
   .receipt figcaption {
